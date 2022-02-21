@@ -1,0 +1,48 @@
+{
+    "author"           :   "Ivan Wellesz",
+    "name"             :   "RTabsSplitter Extension",
+    "short_name"       :   "RTabsSplitter",
+    "version"          :   "1.21.11.30",
+    "manifest_version" :    2,
+    "description"      :   "Sentence splitter",
+    "homepage_url"     :   "https://remotetabs.com",
+    "icons"            : {
+        "48"             : "images/rtabs48.png",
+        "32"             : "images/rtabs32.png",
+        "16"             : "images/rtabs16.png",
+        "16"             : "images/rtabs16_6_b.png",
+        "16"             : "images/rtabs16_6_b_square.png"
+    },
+    "permissions"      : [ "tabs"
+        ,                  "file://*/*"
+        ,                  "http://*/*"
+        ,                  "https://*/*"
+        ,                  "webRequest"
+    ],
+    "content_scripts"  : [
+        {
+            "matches"  : [ "<all_urls>"
+            ],
+            "css"      : [ "stylesheet/dom_host.css"
+            ],
+            "js"       : [ "script/stub/dom_log.js"
+                ,          "script/stub/dom_scroll.js"
+                ,          "script/stub/dom_sentence_util.js"
+                ,          "script/stub/dom_sentence_event.js"
+                ,          "script/dom_sentence.js"
+                ,          "extension/content.js"
+            ]
+        }
+    ],
+    "browser_action"   : {
+        "default_icon" :   "images/rtabs32.png"
+    },
+    "background"       : {
+        "scripts"      : [ "extension/background.js"
+
+
+
+        ],
+        "persistent"   : true
+    }
+}

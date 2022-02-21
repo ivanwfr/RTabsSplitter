@@ -1,5 +1,5 @@
 @charset "utf-8";
-#dom_host_css_tag   { content: "dom_host_css (220220:19h:04)"; }
+#dom_host_css_tag   { content: "dom_host_css (220221:19h:06)"; }
 
 /* body {{{*/
 body.dark { background : #430; }
@@ -969,7 +969,11 @@ table { border-collapse: collapse !important; }
 
 /*}}}*/
 
+/*{{{
 #drag_cursor                  { transition    : transform 300ms ease-out; }
+}}}*/
+#drag_cursor.onload           { transition    : all       200ms ease-out; }
+#drag_cursor                  { transition    : transform 200ms ease-out; }
 #drag_cursor.onload           { transform     :  rotate(360deg) scale(3); }
 #drag_cursor.onload           { border-radius : 1em          !important;  }
 #drag_cursor.onload::after    { content       : "splitter"   !important;  }

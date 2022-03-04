@@ -1,5 +1,5 @@
 @charset "utf-8";
-#dom_host_css_tag   { content: "dom_host_css (220221:19h:06)"; }
+#dom_host_css_tag   { content: "dom_host_css (220304:17h:27)"; }
 
 /* body {{{*/
 body.dark { background : #430; }
@@ -790,7 +790,10 @@ table { border-collapse: collapse !important; }
 .sentence { max-width   : 64ch     !important; }
 .sentence { min-width   : 32ch     !important; }
 .sentence { overflow    : visible  !important; }
+/*{{{
 .sentence { white-space : pre-line !important; }
+}}}*/
+.sentence { white-space : normal   !important; }
 .sentence { text-align  : left     !important; }
 
 .sentence_container.fs1 , .sentence_container.fs1  * { font-size :  6px; } /* E12.1 = 1.0 */

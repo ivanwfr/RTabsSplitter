@@ -21,7 +21,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220214:17h:50)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220304:05h:08)";
 /*}}}*/
 let dom_sentence            = (function() {
 "use strict";
@@ -136,7 +136,7 @@ const CSS_DARK               = "dark";
 
 const E12_FONT_SIZE_LIST = ["fs1", "fs2", "fs3", "fs4", "fs5", "fs6", "fs7", "fs8", "fs9", "fs10", "fs11", "fs12"];
 
-let   e12_font_size      =  "fs5";
+let   e12_font_size      =  "fs9";
 /*}}}*/
 /* EVEN ODD {{{
 const CSS_EVEN               =     "even";

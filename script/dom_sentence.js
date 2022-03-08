@@ -14,6 +14,7 @@
 /* globals dom_popup  */
 /* globals dom_view   */
 /* globals dom_scroll */
+/* globals dom_prop   */
 
 /* exported dom_sentence, DOM_SENTENCE_JS_TAG */
 
@@ -21,7 +22,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220304:20h:57)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220308:15h:16)";
 /*}}}*/
 let dom_sentence            = (function() {
 "use strict";
@@ -332,7 +333,7 @@ const             BOUNDARY = "\\W*[\\.,;:?\\n\\r]+(?!\\w)"  ; /* non-capturing-g
 const            LAST_WORD = WORD +"{1,}";
 const           FIRST_WORD = WORD +"+";
 
-const CAPTURING_PREV_END   = "("    + LAST_WORD  +")"       ; /* p1 capturing group */
+const CAPTURING_PREV_END   = "("    + LAST_WORD  +")?"      ; /* p1 capturing group */
 const CAPTURING_BOUNDARY   = "("    + BOUNDARY   +")"       ; /* p2 capturing group */
 const CAPTURING_NEXT_START = "(\\n|"+ FIRST_WORD +")"       ; /* p3 capturing group */
 
@@ -373,6 +374,8 @@ if( log_this) console_dir("container",container        );
 if( log_this && e) log("%c type=["+e.type+"] e.target.id=["+e.target.id+"]", lbH+lf3);
 /*}}}*/
     if( check_tool_event(e) ) return;
+
+    if((typeof dom_prop) != "undefined") theme_dark = dom_prop.get("theme_dark");
 
     if(!sentence_containers.includes( container ))
         sentence_containers.push    ( container );
@@ -564,9 +567,9 @@ if( log_this) log_key_val_group(            caller
 /*}}}*/
 /*_ strip_HTML {{{*/
 /*{{{*/
-/*{{{*/
 const regexp_LI                 = new RegExp("\\s*([\\.,;]\\s*)*<\/(li|LI|)>", "g");
 const regexp_HTML               = new RegExp("<[^>]*>"                       , "g");
+const regexp_PUNC               = new RegExp("\\s*([\\.,;]\\s*)"             , "g");
 
 /*}}}*/
 let strip_HTML = function(text)
@@ -575,6 +578,7 @@ let strip_HTML = function(text)
     return text
         .   replace(regexp_LI   , "."+LF)
         .   replace(regexp_HTML , " "   )
+        .   replace(regexp_PUNC , "$1"  )
         .trim()
     ;
 };
@@ -633,16 +637,17 @@ dom_log.log_caller();
 let sentence_color_next = 1;
 
 /*}}}*/
-let t_SENTENCE_SPLIT_replace = function(match, prev_end, boundary, next_start)
+let t_SENTENCE_SPLIT_replace = function(match, prev_end="", boundary="", next_start="")
 {
 /*{{{*/
+let   caller = "t_SENTENCE_SPLIT_replace";
 let log_this = DOM_SENTENCE_LOG || LOG_MAP.S2_SELECT;
 let tag_this = DOM_SENTENCE_TAG || log_this;
 
 if(next_start == LF) next_start = "";
 
-if( tag_this) log("%c"+prev_end+"%c"+t_util.show_CR_LF(boundary)+"%c"+next_start
-                  ,lbL+lf5      ,lbC+lf6                         ,lbR+lf7       );
+if( tag_this) log(caller+" %c"+prev_end+"%c"+t_util.show_CR_LF(boundary)+"%c"+next_start
+                  ,        lbL+lf5      ,lbC+lf6                         ,lbR+lf7       );
 /*{{{
 if( log_this) log("match=[%c"+t_util.show_CR_LF(match)+"]", lbC);
 if( log_this) console.table(arguments);
@@ -654,6 +659,7 @@ if( log_this) console.table(arguments);
     let entering_a_clause
         =  boundary.includes(",")
         || boundary.includes(";")
+        || boundary.includes( LF)
     /*  || boundary.includes(":")*/
     ;
 
@@ -1174,6 +1180,12 @@ let t_SENTENCE_onresize = function(e=window.event)
     /**/check_tool_event_timer = setTimeout(check_tool_event, CHECK_TOOL_EVENT_DELAY, e);
 };
 /*}}}*/
+/*_ t_SENTENCE_set_theme_dark {{{*/
+let t_SENTENCE_set_theme_dark = function(_theme_dark)
+{
+    theme_dark = !!_theme_dark;
+};
+/*}}}*/
 /*_ check_tool_event {{{*/
 let check_tool_event = function(e=window.event)
 {
@@ -1318,6 +1330,8 @@ return { name : "dom_sentence"
     ,    t_SENTENCE_GET_EL_SENTENCE_CONTAINER
     ,    t_SENTENCE_drag_DXY
     ,    t_SENTENCE_onresize
+
+    ,    t_SENTENCE_set_theme_dark
 
     /* DEBUG */
     ,    o : outline_text_containers_in_view

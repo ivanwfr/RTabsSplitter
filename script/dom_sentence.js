@@ -22,7 +22,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220308:15h:16)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220308:15h:52)";
 /*}}}*/
 let dom_sentence            = (function() {
 "use strict";
@@ -1228,6 +1228,8 @@ console.dir(e);
        && (e.target.id == "dom_sentence_theme_dark")
       ) {
         theme_dark = !theme_dark;
+
+        if((typeof dom_prop) != "undefined") dom_prop.set("theme_dark", theme_dark);
 
         t_SENTENCE_SPLIT( last_container );
 

@@ -11,7 +11,7 @@
 /* eslint-disable no-warning-comments */
 
 const SPLITTER_BACKGROUND_SCRIPT_ID     = "splitter_background_js";
-const SPLITTER_BACKGROUND_SCRIPT_TAG    =  SPLITTER_BACKGROUND_SCRIPT_ID  +" (211206:19h:30)";
+const SPLITTER_BACKGROUND_SCRIPT_TAG    =  SPLITTER_BACKGROUND_SCRIPT_ID  +" (220318:03h:24)";
 
 /*}}}*/
 let splitter_background = (function() {
@@ -297,7 +297,7 @@ log(caller+" ➔ %c BROWSER ACTION %c activated "+options.activated, "color:#FF0
 })();
     splitter_background.add_browser_action_click_listener();
     splitter_background.add_message_listener();
-    splitter_background.options_toggle_activated(true);
+//  splitter_background.options_toggle_activated(true);//FIXME
 
 /*{{{
 "┌─────────────────────────────────────────────────────────────────────────────┐

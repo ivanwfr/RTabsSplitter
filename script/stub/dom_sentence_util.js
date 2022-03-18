@@ -8,7 +8,7 @@
 /* exported dom_sentence_util */
 
 const DOM_SENTENCE_UTIL_JS_ID        = "dom_sentence_util";
-const DOM_SENTENCE_UTIL_JS_TAG       = DOM_SENTENCE_UTIL_JS_ID  +" (220210:18h:39)";  /* eslint-disable-line no-unused-vars */
+const DOM_SENTENCE_UTIL_JS_TAG       = DOM_SENTENCE_UTIL_JS_ID  +" (220309:17h:55)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_sentence_util    = (function() {
 "use strict";
@@ -87,6 +87,58 @@ let t_get_htmlEntities = function(str)
     ;
 }}}*/
     return str.replace(regexp_HTML_ENTITIES, function(c) { return "&#"+c.charCodeAt(0)+";"; });
+};
+/*}}}*/
+/*_ t_copy_to_CLIPBOARD {{{*/
+/*{{{*/
+let cb_textArea = null;
+
+/*}}}*/
+let t_copy_to_CLIPBOARD = function(copy_content)
+{
+    /* [cb_textArea] {{{*/
+    if(!cb_textArea) {
+        cb_textArea     = document.createElement("TEXTAREA");
+        cb_textArea.id  = "cb_textArea";
+        cb_textArea.style.position        = "fixed";
+        cb_textArea.style.top             = "1em";
+        cb_textArea.style.left            = "1em";
+        cb_textArea.style.width           =  "95%";
+        cb_textArea.style.height          = "25em";
+        cb_textArea.style.backgroundColor = "salmon";
+/*{{{
+        let shadow_root = get_shadow_root();
+        shadow_root.appendChild(cb_textArea);
+}}}*/
+        document.body.appendChild(cb_textArea);
+/*{{{
+      document.body.appendChild(cb_textArea);
+      cb_textArea.style.display         = "none";
+      cb_textArea.onclick               = function(e) { this.display = "none"; };
+}}}*/
+    }
+    /*}}}*/
+    /* BUFFER TEXTAREA SHOW AND FILL WITH CONTENT {{{*/
+    cb_textArea.style.display = "block";
+    cb_textArea.value         = copy_content;
+
+    /*}}}*/
+    /* COPY TO CLIPBOARD {{{*/
+    cb_textArea.select();
+
+    if( !document.execCommand("copy") )
+    {
+/*{{{
+        console.log("%c*** COPY TO CLIPBOARD REJECTED ***", "background-color:red");
+        console.log("%c USER EVENT CALLBACK REQUIRED "    ,            "color:red");
+}}}*/
+    }
+    /*}}}*/
+    /* BUFFER TEXTAREA HIDE AND CLEAR {{{*/
+    cb_textArea.style.display = "none";
+    cb_textArea.value         = "";
+
+    /*}}}*/
 };
 /*}}}*/
 
@@ -555,6 +607,7 @@ return { name : DOM_SENTENCE_UTIL_JS_ID
     ,    get_event_XY
 
     , t_get_htmlEntities
+    , t_copy_to_CLIPBOARD
 
     , set_el_class
     , add_el_class

@@ -15,8 +15,8 @@ const CONTENTSCRIPT_JS_TAG              =  CONTENTSCRIPT_JS_ID +" (220221:04h:23
 /*}}}*/
 let splitter_content       = (function() {
 "use strict";
-let log_this =            false;
-let tag_this = log_this || true;//FIXME
+let log_this =             false;
+let tag_this = log_this || false;
 /* log {{{*/
 const LF               = String.fromCharCode(10);
 const LOG_HEADER_STYLE = "border:2px solid #808; border-radius:0 1em 1em 0; background-color:#111;";

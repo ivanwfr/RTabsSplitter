@@ -35,7 +35,7 @@
         }
     ],
     "browser_action"   : {
-        "default_icon" :   "images/rtabs32.png"
+        "default_icon" :   "images/rtabs16_6_b_square.png"
     },
     "background"       : {
         "scripts"      : [ "extension/background.js"

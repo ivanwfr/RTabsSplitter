@@ -14,7 +14,7 @@
 /* exported DOM_SCROLL_JS_TAG */
 
 const DOM_SCROLL_JS_ID         = "dom_scroll_js";
-const DOM_SCROLL_JS_TAG        = DOM_SCROLL_JS_ID  +" (220211:18h:17)";
+const DOM_SCROLL_JS_TAG        = DOM_SCROLL_JS_ID  +" (220317:18h:00)";
 /*}}}*/
 let dom_scroll              = (function() {
 "use strict";
@@ -52,7 +52,7 @@ let t_scroll_IMPORT  = function(_log_this,import_num)
 
     /*}}}*/
     scroll_INTERN();
-if(_log_this) log("➔ "+(import_num ? (import_num+" ") : "")+"t_scroll_IMPORT: "+t_util.name+", "+t_tools.name);
+if(_log_this) log("➔ "+(import_num ? (import_num+" ") : "")+"t_scroll_IMPORT: t_util=["+t_util.name+"] , t_tools=["+t_tools.name+"]");
 };
 /*}}}*/
 /*_   scroll_INTERN {{{*/
@@ -151,7 +151,7 @@ let t_scroll_listener = function(e)
 let   caller = "t_scroll_listener";
 let log_this = DOM_SCROLL_LOG;
 
-    if(!t_util) t_scroll_IMPORT(true);
+    if(!t_util) t_scroll_IMPORT(log_this);
 /*}}}*/
 
     let scroll_details = "scrollY="+window.scrollY;
@@ -237,7 +237,7 @@ let   caller = "t_scrollIntoViewIfNeeded_set_EL";
 let log_this = DOM_SCROLL_LOG;
 let tag_this = DOM_SCROLL_TAG || log_this;
 
-    if(!t_util) t_scroll_IMPORT(true);
+    if(!t_util) t_scroll_IMPORT(log_this);
 /*}}}*/
 
     if(        scrollIntoView_EL
@@ -594,7 +594,23 @@ let   scrollIntoViewIfNeeded_then_recenter_handler_scrollTo_clr_scrollBehavior =
 
 
 /* EXPORT */
+/*➔ t_store_set_state {{{*/
+let t_store_set_state = function(label,state)
+{
+    if(    state != undefined)
+    {
+        if(state) localStorage.setItem   (label, "true");
+        else      localStorage.removeItem(label        );
+        return !!state;
+    }
+    else {
+        return    localStorage.getItem   (label        );
+    }
+};
+/*}}}*/
 return { name : "dom_scroll"
+    ,    logging : (state) => DOM_SCROLL_LOG = t_store_set_state("DOM_SCROLL_LOG",state)
+    ,    tagging : (state) => DOM_SCROLL_TAG = t_store_set_state("DOM_SCROLL_TAG",state)
     ,    t_scroll_listener
     ,    t_scrollIntoViewIfNeeded_set_EL
     ,    t_scroll_is_scrolling

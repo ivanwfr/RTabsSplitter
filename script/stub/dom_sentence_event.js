@@ -13,7 +13,7 @@
 /* eslint-disable no-warning-comments */
 
 const DOM_SENTENCE_EVENT_JS_ID  = "dom_sentence_event";
-const DOM_SENTENCE_EVENT_JS_TAG = DOM_SENTENCE_EVENT_JS_ID +" (220221:19h:38)";  /* eslint-disable-line no-unused-vars */
+const DOM_SENTENCE_EVENT_JS_TAG = DOM_SENTENCE_EVENT_JS_ID +" (220317:17h:51)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_sentence_event   = (function() {
 "use strict";
@@ -106,10 +106,10 @@ let log_this = DOM_SENTENCE_LOG;
 if( log_this) log6("→ add_long_press_arm_listener");
 /*}}}*/
 
-    if(long_press_timer    ) clearTimeout(long_press_timer      ); long_press_timer = null;
+    if( long_press_timer     ) clearTimeout(long_press_timer      ); long_press_timer = null;
 
-    if(long_press_arm_timer) clearTimeout(long_press_arm_timer  );
-    long_press_arm_timer =     setTimeout(long_press_arm_handler, LONG_PRESS_ARM_DELAY);
+    if( long_press_arm_timer ) clearTimeout(long_press_arm_timer  );
+    /**/long_press_arm_timer =   setTimeout(long_press_arm_handler , LONG_PRESS_ARM_DELAY);
 };
 /*}}}*/
 /*_ long_press_arm_handler {{{*/
@@ -122,8 +122,8 @@ if(log_this) log6("→→ long_press_arm_handler");
 /*}}}*/
     long_press_arm_timer = null;
 
-    if(long_press_timer) clearTimeout(long_press_timer);
-    long_press_timer     = setTimeout(long_press_handler, LONG_PRESS_DELAY);
+    if( long_press_timer )     clearTimeout(long_press_timer      );
+    /**/long_press_timer =       setTimeout(long_press_handler     , LONG_PRESS_DELAY);
 };
 /*}}}*/
 /*_ long_press_handler ➔ SENTENCE_SPLIT {{{*/
@@ -134,13 +134,13 @@ let log_this = DOM_SENTENCE_LOG;
 
 if(log_this) log6("→→→ long_press_handler");
 /*}}}*/
+    long_press_timer = null;
 
     let { container , cells } = dom_sentence.t_SENTENCE_GET_EL_CONTAINER(onDown_EL, log_this);
     if(   container )
     {
         if( cells ) for(let i=0; i < cells.length; ++i) dom_sentence.t_SENTENCE_SPLIT( cells[i]  );
         else                                            dom_sentence.t_SENTENCE_SPLIT( container );
-        dom_sentence.t_SENTENCE_SPLIT( container );
     }
 
     dom_scroll.t_scrollIntoViewIfNeeded_set_EL( container );
@@ -566,16 +566,115 @@ if( log_this) log0("preventDefault");
 
 /* LAYOUT */
 /*_ t_scrollIntoViewIfNeeded {{{*/
+/*{{{*/
+const T_SCROLLINTOVIEW_DELAY = 500;
+
+const SCROLLBAR_WIDTH = 16;
+const VIEWPORT_MARGIN =
+    {          top    : 16
+        ,      left   : 16
+        ,      right  : 16 + SCROLLBAR_WIDTH
+        ,      bottom : 32 + SCROLLBAR_WIDTH
+    };
+
+let   scrollIntoViewIfNeeded_timer;
+/*}}}*/
 let t_scrollIntoViewIfNeeded = function(el)
 {
+    if(scrollIntoViewIfNeeded_timer) clearTimeout( scrollIntoViewIfNeeded_timer );
+    scrollIntoViewIfNeeded_timer     = setTimeout(scrollIntoViewIfNeeded_handler, T_SCROLLINTOVIEW_DELAY, el);
+};
+let scrollIntoViewIfNeeded_handler = function(el)
+{
+    scrollIntoViewIfNeeded_timer = null;
+
     document.getElementsByTagName("HTML")[0].style.scrollBehavior = "smooth"; /* (smooth|instant) */
 
-    let el_H2= Math.min(el.clientHeight/2, window.innerHeight/2);
+    let xy = scrollIntoViewIfNeeded_get_scrollXY(el);
+    if( xy )
+        window.scrollTo(xy.x, xy.y);
 
-    let x     = el.offsetLeft;
-    let y     = el.offsetTop + el_H2 - window.innerHeight/2;
+};
+/*}}}*/
+/*_   scrollIntoViewIfNeeded_get_scrollXY {{{*/
+let   scrollIntoViewIfNeeded_get_scrollXY = function(el)
+{
+    /* VIEW {{{*/
+    let w_W = window.innerWidth ;
+    let w_H = window.innerHeight;
+    let view_rect
+        = {   left   : window.scrollX       + VIEWPORT_MARGIN.left
+            , top    : window.scrollY       + VIEWPORT_MARGIN.top
+            , right  : window.scrollX + w_W - VIEWPORT_MARGIN.right
+            , bottom : window.scrollY + w_H - VIEWPORT_MARGIN.bottom
+        };
 
-    window.scrollTo(x, y);
+    view_rect.height
+        = view_rect.bottom
+        - view_rect.top;
+
+    /*}}}*/
+    /* EL {{{*/
+    let cr
+        = el.getBoundingClientRect();
+    let el_rect
+        = {   left   : cr.left   + window.scrollX
+            , top    : cr.top    + window.scrollY
+            , right  : cr.right  + window.scrollX
+            , bottom : cr.bottom + window.scrollY
+        };
+
+    el_rect.height
+        = el_rect.bottom
+        - el_rect.top;
+
+    /*}}}*/
+    /* OVER [top left bottom right] {{{*/
+    let over_left      = (el_rect.left    < view_rect.left  ) && (window.scrollX > 0);
+    let over_top       = (el_rect.top     < view_rect.top   ) && (window.scrollY > 0);
+    let over_right     = (el_rect.left    > view_rect.right );
+    let over_bottom    = (el_rect.top     > view_rect.bottom);
+
+    let over_something
+        = (over_top    ? "T":"")
+        + (over_left   ? "L":"")
+        + (over_right  ? "R":"")
+        + (over_bottom ? "B":"");
+
+    /*}}}*/
+    /* NOT NEEDED .. (return null) {{{*/
+    if(!!!over_something) return null; /* falsy coerced */ /* eslint-disable-line no-extra-boolean-cast */
+
+    /*}}}*/
+    /* scrollX scrollY {{{*/
+    let may_go_left    = (el_rect.right  < window.innerWidth); /* i.e. still visible with no left margin */
+
+    let scrollX
+        = (over_left  ) ? el_rect.left                         - VIEWPORT_MARGIN.left
+        : (over_right ) ? el_rect.right   - window.innerWidth  + VIEWPORT_MARGIN.right
+        : may_go_left   ?                   0
+        :                                   window.scrollX;
+    scrollX = Math.max(scrollX, 0);
+
+    let scrollY
+        = (over_top    ) ? el_rect.top                         - VIEWPORT_MARGIN.left
+        : (over_bottom ) ? el_rect.bottom - window.innerHeight + VIEWPORT_MARGIN.right
+        :                                   window.scrollY;
+    scrollY = Math.max(scrollY, 0);
+
+    /*}}}*/
+    let    result = { x: scrollX.toFixed(0) , y: scrollY.toFixed(0) };
+/*{{{
+console.log("result:"
+            , {  over_something
+               , T: el_rect.top   .toFixed(0) +" / "+ view_rect.top
+               , R: el_rect.right .toFixed(0) +" / "+ view_rect.right
+               , B: el_rect.bottom.toFixed(0) +" / "+ view_rect.bottom
+               , L: el_rect.left  .toFixed(0) +" / "+ view_rect.left
+               , ...result
+            });
+}}}*/
+    return result;
 };
 /*}}}*/
 

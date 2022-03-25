@@ -22,7 +22,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220317:17h:38)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220323:19h:15)";
 /*}}}*/
 let dom_sentence            = (function() {
 "use strict";
@@ -413,7 +413,7 @@ if( log_this) {
     log("...CAPTURING_NEXT_START %c"+CAPTURING_NEXT_START, lbC+lf7);
 }
 if( tag_this) {
-    log("regexp_SENTENCE %c prev_end %c boundary %c next_start %c\n"+regexp_SENTENCE
+    log("regexp_SENTENCE %c prev_end %c boundary %c next_start %c"+LF+regexp_SENTENCE
         ,                lbL+lf5    ,lbC+lf6    ,lbR+lf7      ,"border:1px solid magenta;");
 }
 /*}}}*/
@@ -575,6 +575,7 @@ if( log_this) log_key_val_group(            caller
 const regexp_LI                 = new RegExp("\\s*([\\.,;]\\s*)*<\/(li|LI|)>", "g");
 const regexp_HTML               = new RegExp("<[^>]*>"                       , "g");
 const regexp_PUNC               = new RegExp("\\s*([\\.,;]\\s*)"             , "g");
+const regexp_BLANK              = new RegExp("\\s+|(&nbsp;)+"                , "g");
 
 /*}}}*/
 let strip_HTML = function(text)
@@ -584,6 +585,7 @@ let strip_HTML = function(text)
         .   replace(regexp_LI   , "."+LF)
         .   replace(regexp_HTML , " "   )
         .   replace(regexp_PUNC , "$1"  )
+        .   replace(regexp_BLANK , " "  )
         .trim()
     ;
 };

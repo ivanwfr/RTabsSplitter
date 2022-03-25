@@ -22,7 +22,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220323:19h:15)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220325:18h:47)";
 /*}}}*/
 let dom_sentence            = (function() {
 "use strict";
@@ -449,7 +449,8 @@ log("replace:%c"+LF+text, lf3)
 
     container.style.touchAction = "none";
 
-    let style =      " float: right;"
+    let button_style
+        =                " float: right;"
         +            " clear: right;"
         +           " border: none;"
         +           " margin: 0;"
@@ -459,6 +460,9 @@ log("replace:%c"+LF+text, lf3)
         +        " font-size: 24px;"
         +      " font-weight: 900;"
         +      " line-height: 1em;"
+    ;
+    let span_style
+        = "pointer-events: none"
     ;
 
 /*{{{
@@ -470,12 +474,12 @@ log("replace:%c"+LF+text, lf3)
 }}}*/
 
     let tools = ""
-        +    "<button id='dom_sentence_theme_dark' title='THEME DARK' style='"+style+"'>"+ SYMBOL_THEME     +"</button>"
+        +    "<button id='dom_sentence_theme_dark' title='THEME DARK' style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_THEME     +"</span></button>"
 /*{{{
-        +    "<button id='dom_sentence_magnify'    title='MAGNIFY'    style='"+style+"'>"+ magnified_symbol +"</button>"
+        +    "<button id='dom_sentence_magnify'    title='MAGNIFY'    style='"+button_style+"'><span style='"+span_style+"'>"+ magnified_symbol +"</span></button>"
 }}}*/
         + ((typeof dom_popup != "undefined")
-           ? "<button id='dom_sentence_xpath_show' title='XPATH SHOW' style='"+style+"'>"+ SYMBOL_GEAR      +"</button>" : "")
+           ? "<button id='dom_sentence_xpath_show' title='XPATH SHOW' style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_GEAR      +"</span></button>" : "")
     ;
 
     let   theme_style

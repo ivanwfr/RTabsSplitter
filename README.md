@@ -1,10 +1,9 @@
-<!-- README.md _TAG (220221:16h:34) -->
-# RTabsSplitter - Sentence splitter browser extension
+<!-- README.md _TAG (220325:17h:50) -->
+# RTabsSplitter - Web Annotation - Sentence splitter Browser extension
 
+Browser Search-in-Page Highliter Toolset ( built on standard HTML5 DOM3 JS and JSON )
 
 ### ✔ [ZIP archive on GitHub](../../archive/master.zip)
-
-
 
 <!--
 }!!tree             $APROJECTS/GITHUB/SplitterExtension | sed -e 's/^/    /'

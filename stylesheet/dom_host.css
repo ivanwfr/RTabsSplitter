@@ -1,8 +1,8 @@
 @charset "utf-8";
-#dom_host_css_tag   { content: "dom_host_css (220307:16h:37)"; }
+#dom_host_css_tag   { content: "dom_host_css (220420:16h:02)"; }
 
 /* body {{{*/
-body.dark { background : #430; }
+.dark * { background : #111; color: #DDD; }
 
 body.dimmed {
     filter : blur(2px) grayscale(100%) !important;
@@ -457,6 +457,7 @@ DETAILS[open] > * {
 /*}}}*/
 /* TYPE {{{*/
 
+/* //FIXME 220414 .. http://ndpsoftware.com/git-cheatsheet.html {{{
 em {
     background-color  : #fafafa;
     border            : 0px solid #aaa;
@@ -464,6 +465,7 @@ em {
     color             : #444;
     font-style        : normal;
 }
+}}}*/
 
 input       { border  : 6px #eee solid;        }
 input:focus { outline : 0;                     }
@@ -824,13 +826,11 @@ table { border-collapse: collapse !important; }
 
            .clause    { line-height      : 1em         !important ; }
 
-/*
-.sentence_container.dark           { background-color: rgba(000,000,000,0.9) !important; }
-*/
-                   .dark .sentence {        color     : rgba(255,255,255,1.0)  ; }
-                   .dark *::before { display: none !important; }
-                   .dark *::after  { display: none !important; }
-
+    .dark *::before   {          display : none            !important; }
+    .dark *::after    {          display : none            !important; }
+body.dark .sentence   {           filter : brightness(80%) !important; }
+body.dark .sentence   {            color : #FFF                      ; }
+body.dark .clause     {            color : #111                      ; }
 
 .sentence             { border-top-width    : 3px; }
 .clause               { border-top-width    : 0  ; }

@@ -13,7 +13,7 @@
 /* eslint-disable no-warning-comments */
 
 const DOM_SENTENCE_EVENT_JS_ID  = "dom_sentence_event";
-const DOM_SENTENCE_EVENT_JS_TAG = DOM_SENTENCE_EVENT_JS_ID +" (220317:17h:51)";  /* eslint-disable-line no-unused-vars */
+const DOM_SENTENCE_EVENT_JS_TAG = DOM_SENTENCE_EVENT_JS_ID +" (220401:00h:32)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_sentence_event   = (function() {
 "use strict";
@@ -132,9 +132,13 @@ let long_press_handler  = function()
 /*{{{*/
 let log_this = DOM_SENTENCE_LOG;
 
-if(log_this) log6("→→→ long_press_handler");
+    let is_scrolling = dom_scroll.t_scroll_is_scrolling();
+if(     log_this && !is_scrolling) log6("→→→ long_press_handler: t_scroll_is_scrolling=["+is_scrolling+"] .. onDown_EL.className=["+onDown_EL.className+"]");
+else if(log_this                 ) log8("→→→ long_press_handler: t_scroll_is_scrolling=["+is_scrolling+"] .. onDown_EL.className=["+onDown_EL.className+"]");
 /*}}}*/
     long_press_timer = null;
+
+    if( is_scrolling ) return;
 
     let { container , cells } = dom_sentence.t_SENTENCE_GET_EL_CONTAINER(onDown_EL, log_this);
     if(   container )
@@ -149,31 +153,33 @@ if(log_this) log6("→→→ long_press_handler");
 
 /* DOWN ➔ MOVE ➔ DRAG - log7 */
 /*_ t_SENTENCE_drag_listener {{{*/
-let t_SENTENCE_drag_listener = function(event)
+let t_SENTENCE_drag_listener = function(e)
 {
-if(event.altKey ) return;
-if(event.ctrlKey) return;
+if(e.altKey ) return;
+if(e.ctrlKey) return;
 /*{{{*/
 let   caller = "t_SENTENCE_drag_listener";
 let log_this = DOM_SENTENCE_LOG;
 
-if( log_this) log7(caller);
+    let sentence_container_dragged = t_util.is_el_or_child_of_class(onDown_EL, dom_sentence.CSS_SENTENCE_CONTAINER);
+if(     log_this && sentence_container_dragged) log7(caller+": sentence_container_dragged=["+t_util.get_id_or_tag(sentence_container_dragged)+"]");
+else if(log_this                              ) log8(caller+": sentence_container_dragged=["+t_util.get_id_or_tag(sentence_container_dragged)+"]");
 /*}}}*/
 
-    get_onMoveDXY(event, caller);
+    get_onMoveDXY(e, caller);
 
-    if(onDown_EL && dom_sentence.t_SENTENCE_drag_DXY( onMoveDXY ))
+    if(sentence_container_dragged && dom_sentence.t_SENTENCE_drag_DXY(onMoveDXY) )
     {
         /* next move from here */
 /*{{{
         zap_onMoveDXY();
 }}}*/
-        drag_cursor.move_drag_cursor(event);
-        event.preventDefault();
+        drag_cursor.move_drag_cursor(e);
+        preventDefault(e);
     }
     else if( drag_cursor.get_mouseUP_display_state() )
     {
-        drag_cursor.move_drag_cursor(event);
+        drag_cursor.move_drag_cursor(e);
     }
 };
 /*}}}*/
@@ -700,7 +706,7 @@ console.log("result:"
 /* exported drag_cursor, DRAG_CURSOR_JS_ID */
 
 const DRAG_CURSOR_JS_ID       = "drag_cursor" ;
-const DRAG_CURSOR_JS_TAG      = DRAG_CURSOR_JS_ID +" (220221:19h:13)";  /* eslint-disable-line no-unused-vars */
+const DRAG_CURSOR_JS_TAG      = DRAG_CURSOR_JS_ID +" (220221:19h:37)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let drag_cursor  = (function() {
 "use strict"; /* eslint-disable-line strict */

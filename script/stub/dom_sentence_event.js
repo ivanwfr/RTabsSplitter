@@ -13,7 +13,7 @@
 /* eslint-disable no-warning-comments */
 
 const DOM_SENTENCE_EVENT_JS_ID  = "dom_sentence_event";
-const DOM_SENTENCE_EVENT_JS_TAG = DOM_SENTENCE_EVENT_JS_ID +" (220401:00h:32)";  /* eslint-disable-line no-unused-vars */
+const DOM_SENTENCE_EVENT_JS_TAG = DOM_SENTENCE_EVENT_JS_ID +" (220509:17h:06)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_sentence_event   = (function() {
 "use strict";
@@ -75,6 +75,8 @@ if(e.ctrlKey) { log(e.type+" IGNORED .. f(e.ctrlKey)" ); return; }
 /*… t_pointerdown_handler {{{*/
 let t_pointerdown_handler = function(e)
 {
+if( e.shiftKey ) console.log("t_pointerdown_handler: %c if( e.shiftKey ) return;", "background-color: #F008");/*//FIXME*/
+    if( e.shiftKey ) return;
 /*{{{*/
 let log_this = DOM_SENTENCE_LOG;
 
@@ -127,9 +129,11 @@ if(log_this) log6("→→ long_press_arm_handler");
 };
 /*}}}*/
 /*_ long_press_handler ➔ SENTENCE_SPLIT {{{*/
+const          MOVE_MIN = 5;
 let long_press_handler  = function()
 {
 /*{{{*/
+let   caller = "long_press_handler";
 let log_this = DOM_SENTENCE_LOG;
 
     let is_scrolling = dom_scroll.t_scroll_is_scrolling();
@@ -139,6 +143,11 @@ else if(log_this                 ) log8("→→→ long_press_handler: t_scroll_
     long_press_timer = null;
 
     if( is_scrolling ) return;
+
+    let has_moved = (Math.abs(onMoveDXY.x) >= MOVE_MIN)
+        ||          (Math.abs(onMoveDXY.y) >= MOVE_MIN);
+console.log(caller+": %c onMoveDXY=["+onMoveDXY.x+" "+onMoveDXY.y+"]", ("color: "+(has_moved ? "red" : "green")+";"));/*//FIXME*/
+    if( has_moved    ) return;
 
     let { container , cells } = dom_sentence.t_SENTENCE_GET_EL_CONTAINER(onDown_EL, log_this);
     if(   container )

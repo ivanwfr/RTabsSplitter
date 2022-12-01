@@ -1,5 +1,5 @@
 @charset "utf-8";
-#dom_host_css_tag   { content: "dom_host_css (220509:14h:40)"; }
+#dom_host_css_tag   { content: "dom_host_css (220916:18h:32)"; }
 
 /* body {{{*/
 .dark * { background : rgba(17,17,17,0.5); color: rgba(221,221,221,0.5); }
@@ -760,6 +760,8 @@ em.select0 { cursor : all-scroll !important; }
     border-radius : 1em 1em 0 0;
 }}}*/
 }
+UL.sentence_container { display: block; }
+OL.sentence_container { display: block; }
 /*{{{
 :new C:/LOCAL/DATA/ANDROID/PROJECTS/iwintoo/XPH/stylesheet/dom_host.css
 }}}*/
@@ -831,6 +833,7 @@ table { border-collapse: collapse !important; }
 
     .dark *::before   {          display : none            !important; }
     .dark *::after    {          display : none            !important; }
+body.dark IMG         {           filter : brightness(50%) !important; }
 body.dark .sentence   {           filter : brightness(80%) !important; }
 body.dark .sentence   {            color : #FFF                      ; }
 body.dark .clause     {            color : #111                      ; }

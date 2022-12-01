@@ -22,7 +22,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220509:16h:27)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220828:20h:20)";
 /*}}}*/
 let dom_sentence            = (function() {
 "use strict";
@@ -121,7 +121,8 @@ let localStorage_delItem = function(key    ) { /*...............................
 /*}}}*/
 
 /*{{{*/
-const LF    = String.fromCharCode(10);
+const LF                = String.fromCharCode(10);
+const UNICODE_BULLET    = "&#x2022;";
 
 let sentence_containers = [];
 /*}}}*/
@@ -154,10 +155,6 @@ const CSS_EVEN_ODD_ARRAY     = [CSS_EVEN , CSS_ODD];
 let t_SENTENCE_GET_EL_CONTAINER = function(el,_log_this)
 {
 /*{{{*/
-let   caller = "t_SENTENCE_GET_EL_CONTAINER";
-let log_this = _log_this || LOG_MAP.S2_SELECT;
-
-/*}}}*/
 /*┌──────────────────────────────────────────────────────────────────────────┐*/
 /*│ NOTE:                                                                    │*/
 /*│ - As [el] cannot be a TEXT_NODE                                          │*/
@@ -165,104 +162,112 @@ let log_this = _log_this || LOG_MAP.S2_SELECT;
 /*│ - that can have a huge textcontent                                       │*/
 /*└──────────────────────────────────────────────────────────────────────────┘*/
 
+let   caller = "t_SENTENCE_GET_EL_CONTAINER";
+let log_this = _log_this || LOG_MAP.S2_SELECT;
+
     if(!t_util) console.warn("MISSING STUB FOR: [dom_util]");
+    let container;
 
-    /* [container] CSS_OUTLINED {{{*/
-    let container
-        =  t_util.get_el_parent_with_class(el,  CSS_OUTLINED    );
-    if( container )
-    {
-if(log_this) log(caller+": ...return CSS_OUTLINED container=["+t_util.get_n_lbl(container)+"]");
-
-        return { container };
-    }
-    /*}}}*/
+/*}}}*/
     /* [HTML TAG] {{{*/
-    container
-        =  t_util.get_el_parent_with_class(el, "container_light") /* ▼ ordered by priority... */
-        || t_util.get_el_parent_with_class(el, "container_dark" )
-
-    /* LIST */
-        || t_util.get_el_parent_with_tag  (el,  "LI"       )
-/*      || t_util.get_el_parent_with_tag  (el, "UL"        ) */
-/*      || t_util.get_el_parent_with_tag  (el, "OL"        ) */
-
-    /* TEXT */
-        || t_util.get_el_parent_with_tag  (el, "PRE"       )
-        || t_util.get_el_parent_with_tag  (el, "P"         )
-
-    /* TABLE */
-/*      || t_util.get_el_parent_with_tag  (el,  "TH"       ) */ /* single cell             */
-        || t_util.get_el_parent_with_tag  (el,  "TD"       )    /* single cell             */
-/*      || t_util.get_el_parent_with_tag  (el,  "THEAD"    ) */ /*        cell collection  */
-/*      || t_util.get_el_parent_with_tag  (el,  "TFOOT"    ) */ /*        cell collection  */
-/*      || t_util.get_el_parent_with_tag  (el,  "COLGROUP" ) */ /*        cell collection  */
-/*      || t_util.get_el_parent_with_tag  (el,  "CAPTION"  ) */ /*        cell collection  */
-/*      || t_util.get_el_parent_with_tag  (el,  "TBODY"    ) */ /*        cell collection  */
-        || t_util.get_el_parent_with_tag  (el, "TABLE"     )    /*        cell collection  */
-
-    /* GLOSSARY */
-/*      || t_util.get_el_parent_with_tag  (el,  "DT"       ) */ /* single cell Term        */
-/*      || t_util.get_el_parent_with_tag  (el,  "DD"       ) */ /* single cell Description */
-/*      || t_util.get_el_parent_with_tag  (el, "DL"        ) */ /*        cell collection  .. https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl */
-
-    /* COMPOSITION */
-        || t_util.get_el_parent_with_tag  (el, "BLOCKQUOTE")
-        || t_util.get_el_parent_with_tag  (el, "DIR"       )
-        || t_util.get_el_parent_with_tag  (el, "DIV"       )
-
-    /* DETAILS */
-/*      || t_util.get_el_parent_with_tag  (el,  "SUMMARY"  ) */
-        || t_util.get_el_parent_with_tag  (el, "DETAILS"   )
-    ;
-
     if(!container)
     {
-if(log_this) log(caller+": ...return NO container");
-        return "";
+        container =  null
+
+        /* PREVIOUSLY SELECTED */
+        /*  || t_util.get_el_parent_with_class(el, "container_light")  */ /* ▼ ordered by priority... */
+        /*  || t_util.get_el_parent_with_class(el, "container_dark" )
+
+        /* LIST */
+        /*  || t_util.get_el_parent_with_tag  (el,  "LI"            ) */
+            || t_util.get_el_parent_with_tag  (el, "UL"             )
+            || t_util.get_el_parent_with_tag  (el, "OL"             )
+
+        /* TEXT */
+            || t_util.get_el_parent_with_tag  (el, "PRE"            )
+            || t_util.get_el_parent_with_tag  (el, "P"              )
+
+        /* TABLE */
+        /*  || t_util.get_el_parent_with_tag  (el,  "TH"            ) */ /* single cell             */
+            || t_util.get_el_parent_with_tag  (el,  "TD"            )    /* single cell             */
+        /*  || t_util.get_el_parent_with_tag  (el,  "THEAD"         ) */ /*        cell collection  */
+        /*  || t_util.get_el_parent_with_tag  (el,  "TFOOT"         ) */ /*        cell collection  */
+        /*  || t_util.get_el_parent_with_tag  (el,  "COLGROUP"      ) */ /*        cell collection  */
+        /*  || t_util.get_el_parent_with_tag  (el,  "CAPTION"       ) */ /*        cell collection  */
+        /*  || t_util.get_el_parent_with_tag  (el,  "TBODY"         ) */ /*        cell collection  */
+            || t_util.get_el_parent_with_tag  (el, "TABLE"          )    /*        cell collection  */
+
+        /* GLOSSARY */
+        /*  || t_util.get_el_parent_with_tag  (el,  "DT"         ) */ /* single cell Term        */
+        /*  || t_util.get_el_parent_with_tag  (el,  "DD"         ) */ /* single cell Description */
+        /*  || t_util.get_el_parent_with_tag  (el, "DL"          ) */ /*        cell collection  .. https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl */
+
+        /* COMPOSITION */
+            || t_util.get_el_parent_with_tag  (el, "BLOCKQUOTE"      )
+            || t_util.get_el_parent_with_tag  (el, "DIR"             )
+            || t_util.get_el_parent_with_tag  (el, "DIV"             )
+
+        /* DETAILS */
+        /*  || t_util.get_el_parent_with_tag  (el,  "SUMMARY"       ) */
+            || t_util.get_el_parent_with_tag  (el, "DETAILS"        )
+        ;
+
+    }
+    /*}}}*/
+    /* CSS_OUTLINED {{{*/
+    if(!container)
+    {
+        container
+        =  t_util.get_el_parent_with_class(el,  CSS_OUTLINED    );
+
+if(log_this && container) log(caller+": ...CSS_OUTLINED container=["+t_util.get_n_lbl(container)+"]");
     }
     /*}}}*/
     /* [CLICKED TITLE] ➔ [TITLE + DL] {{{*/
 /* eslint-disable no-unused-vars */
-    let c_next = container              .nextElementSibling;
+    let cells;
+    if(container)
+    {
+        let c_next = container              .nextElementSibling;
 
-    let p_next = container.parentElement
-        ?        container.parentElement.nextElementSibling
-        :        null
-    ;
+        let p_next = container.parentElement
+            ?        container.parentElement.nextElementSibling
+            :        null
+        ;
 
-    let group
-        = (!container)                          ? null
-/*      : ( c_next && (c_next.tagName == "DL")) ? [ container               , c_next ] */
-/*      : ( p_next && (p_next.tagName == "DL")) ? [ container.parentElement , p_next ] */
-        :                                         null
-    ;
+        let group
+            = (!container)                          ? null
+/*          : ( c_next && (c_next.tagName == "DL")) ? [ container               , c_next ] */
+/*          : ( p_next && (p_next.tagName == "DL")) ? [ container.parentElement , p_next ] */
+            :                                         null
+        ;
 
-    /* [CLICKED DT] ➔ [CONTAINING DL] */
-    let dlist
-        = (!container)                        ? null
-        : ( container.nodeName == "DL"      ) ? container
-        : ( container.nodeName == "DT"      ) ? container.parentElement
-        :                                       null
-    ;
+        /* [CLICKED DT] ➔ [CONTAINING DL] */
+        let dlist
+            = (!container)                          ? null
+            : ( container.nodeName == "DL"      )   ? container
+            : ( container.nodeName == "DT"      )   ? container.parentElement
+            :                                         null
+        ;
 
-    let table
-        = (!container)                        ? null
-        : ( container.nodeName ==  "THEAD"  ) ? container.parentElement
-        : ( container.nodeName ==  "TFOOT"  ) ? container.parentElement
-        : ( container.nodeName ==  "TBODY"  ) ? container.parentElement
-        : ( container.nodeName ==  "CAPTION") ? container.parentElement
-        : ( container.nodeName == "TABLE"   ) ? container
-        :                                      null
-    ;
+        let table
+            = (!container)                          ? null
+            : ( container.nodeName ==  "THEAD"  )   ? container.parentElement
+            : ( container.nodeName ==  "TFOOT"  )   ? container.parentElement
+            : ( container.nodeName ==  "TBODY"  )   ? container.parentElement
+            : ( container.nodeName ==  "CAPTION")   ? container.parentElement
+            : ( container.nodeName == "TABLE"   )   ? container
+            :                                         null
+        ;
 
-    let cells
-        =   group ?                        group
-/*      :   dlist ? dlist.querySelectorAll("DIV,DT,DD,TEMPLATE") */
-/*      :   table ? table.querySelectorAll(     "TH,TD,CAPTION") */
-        :           null
-    ;
+        cells
+            =   group ?                        group
+/*          :   dlist ? dlist.querySelectorAll("DIV,DT,DD,TEMPLATE") */
+/*          :   table ? table.querySelectorAll(     "TH,TD,CAPTION") */
+            :                                        null
+        ;
 
+/*{{{*/
 if(log_this && (log_key_val_group != console.log))
     log_key_val_group(caller
                       , {   el
@@ -277,9 +282,20 @@ if(log_this && (log_key_val_group != console.log))
 
 if(log_this) log(caller+": ...return container=["+t_util.get_n_lbl(container)+"] .. cells=["+(cells ? "x"+cells.length : "")+"]");
 
+/*}}}*/
+    }
 /* eslint-enable  no-unused-vars */
 /*}}}*/
-    return { container, cells };
+    /* RETURN { container, cells } {{{*/
+    if(container)
+    {
+        return { container, cells };
+    }
+    else {
+if(log_this) log(caller+": ...return NO container");
+        return "";
+    }
+    /*}}}*/
 };
 /*}}}*/
 /*➔ t_SENTENCE_GET_EL_SENTENCE_CONTAINER {{{*/
@@ -325,11 +341,12 @@ let t_SENTENCE_GET_SENTENCE_CONTAINERS_IN_VIEWPORT = function()
 /* RegEx Testing {{{
 :!start explorer "https://www.compart.com/en/unicode/category"
 :!start explorer "https://regexr.com/32oeg"
+:!start explorer "https://www.regextester.com/94757"
 
 }}}*/
 
 const                 WORD = "\\s*(?:\\p{L}|_|\\(|-|\\))"    ; /* non-capturing-group */
-const             BOUNDARY =     "[\\.,;:?\)\\n\\r]+(?!\\w)" ; /* non-capturing-group .. punct .. no adjacent letter */
+const             BOUNDARY =     "[\\.,;:?\\n\\r]+(?!\\w)"   ; /* non-capturing-group .. punct .. no adjacent letter */
 const            LAST_WORD = WORD    +"{1,}";
 const           FIRST_WORD = WORD    +"+";
 
@@ -343,6 +360,7 @@ const CAPTURING_NEXT_START = "(\\n+|"+ FIRST_WORD +")?"      ; /* p3 capturing g
 /*{{{*/
 const SYMBOL_GEAR          = "\u2699";
 const SYMBOL_THEME         = "\u262F"; /* ☯ */
+const SYMBOL_SCROLL        = "\u2933";
 /*{{{
 const SYMBOL_MAGNIFY_LEFT  = "\uD83D\uDD0D";
 const SYMBOL_MAGNIFY_RIGHT = "\uD83D\uDD0E";
@@ -359,6 +377,7 @@ const THEME_STYLE_LIGHT    = "color: #222 !important; background-color: "+ THEME
 let     theme_dark = false;
 let     magnified  = false;
 let     xpath_show = false;
+let  scroll_smooth =  true;
 let  last_container;
 let regexp_SENTENCE;
 /*}}}*/
@@ -374,15 +393,35 @@ if( tag_this) log("%c"+caller+"("+t_util.get_n_lbl(container)+")", lbH+lf1);
 if( log_this) console_dir("container",container        );
 if( log_this && e) log("%c type=["+e.type+"] e.target.id=["+e.target.id+"]", lbH+lf3);
 /*}}}*/
+    /* tools have precedence {{{*/
     if( check_tool_event(e) ) return;
 
+    /*}}}*/
+    /* SYNC SENTENCE COLORS {{{*/
     if((typeof dom_prop) != "undefined") theme_dark = dom_prop.get        ("theme_dark");
     else                                 theme_dark = localStorage_getItem("theme_dark");
 
+    /*}}}*/
+    /* SYNC SCROLL_SMOOTH {{{*/
+/*
+    if((typeof dom_prop) != "undefined") scroll_smooth = dom_prop.get        ("scroll_smooth");
+    else                                 scroll_smooth = localStorage_getItem("scroll_smooth");
+*/
+    document.getElementsByTagName("HTML")[0].style.scrollBehavior
+        = scroll_smooth
+        ? "smooth"
+        : "auto"
+    ;
+    /*}}}*/
+    /* ADD TO SENTENCE CONTAINER COLLECTION {{{*/
     if(!sentence_containers.includes( container ))
         sentence_containers.push    ( container );
 
+    /*}}}*/
+    /* UNFOLD DETAILS CONTAINERS {{{*/
     if(container.nodeName == "DETAILS") container.open = true;
+
+    /*}}}*/
     /* [regexp_SENTENCE] .. [Firefox fail safe] {{{*/
     if(!regexp_SENTENCE ) {
         try {
@@ -475,12 +514,13 @@ log("replace:%c"+LF+text, lf3)
 }}}*/
 
     let tools = ""
-        +    "<button id='dom_sentence_theme_dark' title='THEME DARK' style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_THEME     +"</span></button>"
+        +    "<button id='dom_sentence_theme_dark' title='THEME DARK'    style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_THEME     +"</span></button>"
+        +    "<button id='dom_scroll_smooth'       title='SCROLL SMOOTH' style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_SCROLL    +"</span></button>"
 /*{{{
-        +    "<button id='dom_sentence_magnify'    title='MAGNIFY'    style='"+button_style+"'><span style='"+span_style+"'>"+ magnified_symbol +"</span></button>"
+        +    "<button id='dom_sentence_magnify'    title='MAGNIFY'       style='"+button_style+"'><span style='"+span_style+"'>"+ magnified_symbol +"</span></button>"
 }}}*/
         + ((typeof dom_popup != "undefined")
-           ? "<button id='dom_sentence_xpath_show' title='XPATH SHOW' style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_GEAR      +"</span></button>" : "")
+           ? "<button id='dom_sentence_xpath_show' title='XPATH SHOW'    style='"+button_style+"'><span style='"+span_style+"'>"+ SYMBOL_GEAR      +"</span></button>" : "")
     ;
 
     let   theme_style
@@ -558,6 +598,7 @@ if( log_this) log_key_val_group(            caller
                                  ,            text : "(length: "+        text.length+") "       + t_util.ellipsis(text               )
                                  ,       container : "(length: "+container.innerHTML.length+") "+ t_util.ellipsis(container.innerHTML)
                                  ,      theme_dark
+                                 ,   scroll_smooth
                                  ,       magnified
                                  ,      xpath_show
                                  ,         callers : dom_log.get_callers && dom_log.get_callers()
@@ -577,22 +618,35 @@ if( log_this) log_key_val_group(            caller
 /*}}}*/
 /*_ strip_HTML {{{*/
 /*{{{*/
-const regexp_LI                 = new RegExp("\\s*([\\.,;]\\s*)*<\/(li|LI|)>", "g");
-const regexp_HTML               = new RegExp("<[^>]*>"                       , "g");
-const regexp_PUNC               = new RegExp("\\s*([\\.,;]\\s*)"             , "g");
-const regexp_BLANK              = new RegExp("\\s+|(&nbsp;)+"                , "g");
+const regexp_BRLI               = new RegExp("(<br>\\n*)+<\/li>"       , "gi"); /* BR          */
+const regexp_BR                 = new RegExp("<br>"                    , "gi"); /* BR          */
+const regexp_LI                 = new RegExp("\\s*([\\.,;]\\s*)*<\/li>", "gi"); /* </LI>NL<LI> */
+const regexp_MULTI              = new RegExp("(\\s*:\\n*\\s*)+"        , "gms"); /* BR          */
+
+const regexp_HTML               = new RegExp("<[^>]*>"                 , "g" ); /* TAG         */
+const regexp_PUNC               = new RegExp("\\s*([\\.,;]\\s*)"       , "g" ); /* SPACE PUNCT */
+const regexp_BLANK              = new RegExp("\\s+|(&nbsp;)+"          , "g" ); /* SPACE       */
 
 /*}}}*/
 let strip_HTML = function(text)
 {
     if(   !text) return "";
-    return text
-        .   replace(regexp_LI   , "."+LF)
-        .   replace(regexp_HTML , " "   )
-        .   replace(regexp_PUNC , "$1"  )
-        .   replace(regexp_BLANK , " "  )
-        .trim()
+
+    /* BR LI */
+    text = text
+        .   replace(regexp_BRLI  , "</li>")
+        .   replace(regexp_LI    , "."+LF+UNICODE_BULLET)
+        .   replace(regexp_BR    , ":"    )
+        .   replace(regexp_MULTI , ":"+LF )
     ;
+
+    text = text
+        .   replace(regexp_HTML  , " "    )
+        .   replace(regexp_PUNC  , "$1"   )
+        .   replace(regexp_BLANK , " "    )
+    ;
+
+    return text.trim();
 };
 /*}}}*/
 /*_ t_SENTENCE_SPLIT_set_parent_theme_dark {{{*/
@@ -1215,7 +1269,7 @@ console.dir(e);
         return true;
     }
     /*}}}*/
-    /* TOGGLE [theme_dark] {{{*/
+    /* TOGGLE [magnified] {{{*/
     if(    last_container
        &&  e
        &&  e.target
@@ -1234,12 +1288,41 @@ console.dir(e);
        &&  e.target
        && (e.target.id == "dom_sentence_theme_dark")
       ) {
+
+        /* toggle */
         theme_dark = !theme_dark;
+
+        /* apply */
         localStorage_setItem("theme_dark", theme_dark);
 
+        /* save */
         if((typeof dom_prop) != "undefined") dom_prop.set("theme_dark", theme_dark);
 
+        /* display */
         t_SENTENCE_SPLIT( last_container );
+
+        return true;
+    }
+    /*}}}*/
+    /* TOGGLE [scroll_smooth] {{{*/
+    if(    last_container
+       &&  e
+       &&  e.target
+       && (e.target.id == "dom_scroll_smooth")
+      ) {
+
+        /* toggle */
+        scroll_smooth = !scroll_smooth;
+
+        /* apply */
+        document.getElementsByTagName("HTML")[0] .style.scrollBehavior
+            = scroll_smooth ? "smooth" : "auto";
+
+        /* animate */
+        let distance = scroll_smooth ? 128 :  32;
+        let delay    = scroll_smooth ? 500 : 250;
+        window                   .scrollBy(0, distance);
+        setTimeout(() => { window.scrollBy(0,-distance); }, delay);
 
         return true;
     }

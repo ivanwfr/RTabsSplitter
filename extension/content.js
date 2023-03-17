@@ -3,7 +3,7 @@
 /* └────────────────────────────────────────────────────────────────────────┘ */
 /* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
 
-/* globals console, chrome, setTimeout */
+/* globals console, chrome, setTimeout      */ /* eslint-disable-line no-redeclare */
 /* globals dom_sentence, dom_sentence_event */
 
 /* exported CONTENTSCRIPT_JS_TAG, splitter_content */
@@ -11,7 +11,7 @@
 /* eslint-disable no-warning-comments */
 
 const CONTENTSCRIPT_JS_ID               = "splitter_content_js";
-const CONTENTSCRIPT_JS_TAG              =  CONTENTSCRIPT_JS_ID +" (220221:04h:23)";  /* eslint-disable-line no-unused-vars */
+const CONTENTSCRIPT_JS_TAG              =  CONTENTSCRIPT_JS_ID +" (230206:17h:43)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let splitter_content       = (function() {
 "use strict";
@@ -31,6 +31,7 @@ let log = (arg1,...rest) => {
 };
 /*}}}*/
 
+/* INIT */
 /*➔ splitter_content_init .. (listeners) {{{*/
 /*{{{*/
 
@@ -56,6 +57,8 @@ if(log_this) log("...QUERY CURRENT [activated] STATE FROM BACKGROUND SCRIPT");
     /*}}}*/
 };
 /*}}}*/
+
+/* INIT DEPENDENCIES */
 /*  dom_modules_IMPORT {{{*/
 let dom_modules_IMPORT = function()
 {
@@ -74,6 +77,8 @@ if(typeof dom_sentence_event != "undefined") dom_sentence_event.t_SENTENCE_add_L
 
 };
 /*}}}*/
+
+/* MESSAGE LISTENERS */
 /*_ add_message_listener {{{*/
 let add_message_listener = function()
 {
@@ -116,6 +121,8 @@ if( log_this) console.dir( request );
     return true; /* .. async response expected */
 };
 /*}}}*/
+
+/* MESSAGE HANDLERS */
 /*_ onMessage_activated {{{*/
 /*{{{*/
 let dom_sentence_has_been_initialized;
@@ -166,10 +173,15 @@ if( tag_this) log("%c "+caller+": ➔ %c activated "+request.activated, "color:#
     else {
         dom_sentence_event.t_SENTENCE_add_LISTENER(log_this, tag_this);
         dom_sentence_event.set_mouseUP_display_state(true);
+
+        if(typeof request.theme_dark != "undefined")
+            dom_sentence.t_SENTENCE_set_theme_dark( request.theme_dark );
     }
     /*}}}*/
 };
 /*}}}*/
+
+/* MESSAGES SEND-RECEIVE */
 /*▲▲▲▲ send_message {{{*/
 let send_message = function(message_object, _caller) /* eslint-disable-line no-unused-vars */
 {

@@ -1,5 +1,5 @@
 @charset "utf-8";
-#dom_host_css_tag   { content: "dom_host_css (220916:18h:32)"; }
+#dom_host_css_tag   { content: "dom_host_css (230201:14h:13)"; }
 
 /* body {{{*/
 .dark * { background : rgba(17,17,17,0.5); color: rgba(221,221,221,0.5); }
@@ -795,7 +795,7 @@ table { border-collapse: collapse !important; }
     background-color : rgba(221,255,221,0.5);
 }
 .sentence { max-width   : 64ch     !important; }
-.sentence { min-width   : 32ch     !important; }
+.sentence { min-width   : 50ch     !important; }
 .sentence { overflow    : visible  !important; }
 /*{{{
 .sentence { white-space : pre-line !important; }

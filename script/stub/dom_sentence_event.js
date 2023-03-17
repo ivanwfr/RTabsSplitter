@@ -13,7 +13,7 @@
 /* eslint-disable no-warning-comments */
 
 const DOM_SENTENCE_EVENT_JS_ID  = "dom_sentence_event";
-const DOM_SENTENCE_EVENT_JS_TAG = DOM_SENTENCE_EVENT_JS_ID +" (220509:17h:06)";  /* eslint-disable-line no-unused-vars */
+const DOM_SENTENCE_EVENT_JS_TAG = DOM_SENTENCE_EVENT_JS_ID +" (230206:17h:57)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_sentence_event   = (function() {
 "use strict";
@@ -322,6 +322,10 @@ let log_this = DOM_SENTENCE_LOG;
 
     let consumed_by                  = "";
 /*}}}*/
+    /* THEME: GET CURRENT {{{*/
+    let was_theme_dark = dom_sentence.t_SENTENCE_get_theme_dark();
+
+    /*}}}*/
     /* [t_CURSOR_del_MOVE_LISTENER] {{{*/
     let   this_MS                    = new Date().getTime();
     let   delayMS                    = onDown_MS ? (this_MS - onDown_MS) : 0;
@@ -344,22 +348,30 @@ let log_this = DOM_SENTENCE_LOG;
     }
     /*}}}*/
     /* [t_SENTENCE_RESTORE_ALL] {{{*/
-    else if(clicked && some_sentence_container)
+    else if(clicked)
     {
-        consumed_by = "UP ➔ ... CLICKED .. SENTENCE RESTORE ALL";
+        if(some_sentence_container)
+        {
+            consumed_by = "UP ➔ ... CLICKED .. SENTENCE RESTORE ALL";
 
-        dom_sentence.t_SENTENCE_RESTORE_ALL( e );
-        some_sentence_container = document.querySelector(".sentence_container");
+            dom_sentence.t_SENTENCE_RESTORE_ALL( e );
+            some_sentence_container = document.querySelector(".sentence_container");
+        }
+        else {
+            consumed_by = "UP ➔ ... CLICKED .. SENTENCE CLEAR ALL";
+
+            dom_sentence.t_SENTENCE_restore_text_containers_outlined();
+        }
     }
     /*}}}*/
     /*{{{*/
     else
     {
         consumed_by
-            = "UP ➔ CLICKED=["+clicked+"]"
-            +  " .. some_sentence_container  =["+ (some_sentence_container   ? some_sentence_container  .tagName : "")+"]"
-            +  " .. onDown_EL                =["+ (onDown_EL                 ? onDown_EL                .tagName : "")+"]"
-            +  " .. onDown_sentence_container=["+ (onDown_sentence_container ? onDown_sentence_container .tagName : "")+"]"
+            = "UP ➔ CLICKED=["+clicked+"]\n"
+            +  " .. some_sentence_container  =["+ (some_sentence_container   ? some_sentence_container  .tagName : "")+"]\n"
+            +  " .. onDown_EL                =["+ (onDown_EL                 ? onDown_EL                .tagName : "")+"]\n"
+            +  " .. onDown_sentence_container=["+ (onDown_sentence_container ? onDown_sentence_container.tagName : "")+"]"
         ;
 
     }
@@ -388,6 +400,19 @@ console.log("...same node             = "+(onDown_sentence_container == some_sen
     /* [clr_onWork_EL] {{{*/
     clr_onWork_EL( caller );
 
+    /*}}}*/
+    /* THEME: STORE CHANGE {{{*/
+    if(   chrome
+       && chrome.runtime
+       && chrome.runtime.sendMessage
+      ) {
+        let theme_dark  = dom_sentence.t_SENTENCE_get_theme_dark();
+        if( theme_dark != was_theme_dark ) {
+if( log_this) log("%c SETTING EXTENSION: ("+DOM_SENTENCE_EVENT_JS_TAG+") { theme_dark : "+theme_dark+" }", "background-color:red; border:1px; border-radius:1em; padding:0.5em;");
+
+            setTimeout(function() { chrome.runtime.sendMessage({ theme_dark }); }, 1000);
+        }
+    }
     /*}}}*/
 if( log_this) log5("→→ "+caller+":"+ consumed_by);
 };

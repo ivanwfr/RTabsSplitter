@@ -3,12 +3,12 @@
 /*└──────────────────────────────────────────────────────────────────────────┘*/
 /* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
 
-/* globals console, window, document, Node */
+/* globals console, window, document, Node, Set */
 
 /* exported dom_sentence_util */
 
 const DOM_SENTENCE_UTIL_JS_ID        = "dom_sentence_util";
-const DOM_SENTENCE_UTIL_JS_TAG       = DOM_SENTENCE_UTIL_JS_ID  +" (220331:19h:31)";  /* eslint-disable-line no-unused-vars */
+const DOM_SENTENCE_UTIL_JS_TAG       = DOM_SENTENCE_UTIL_JS_ID  +" (230124:17h:09)";  /* eslint-disable-line no-unused-vars */
 /*}}}*/
 let dom_sentence_util    = (function() {
 "use strict";
@@ -555,22 +555,26 @@ let get_nodeName_rank = function(node)
 /*}}}*/
 
 /* EVENT */
+/*  get_event_target {{{*/
+let get_event_target = function(e)
+{
+    let e_target = e.currentTarget || e.target;
+
+    let     e_path = e.composedPath();
+    if     (e_path[0] && (e_path[0].tagName != "IMG")) e_target = e_path[0]               ; /* pick first */
+    else if(e_path[1]                                ) e_target = e_path[1]               ; /* but skip first IMG */
+    else if(e_path[0]                                ) e_target = e_path[0]               ; /* .. if possible */
+
+    else if(e.originalTarget                         ) e_target = e.originalTarget        ;
+    else if(e.explicitOriginalTarget                 ) e_target = e.explicitOriginalTarget;
+
+    return e_target;
+};
+/*}}}*/
 /*_ t_get_event_target {{{*/
 let t_get_event_target = function(e) /* eslint-disable-line complexity */
 {
-    let e_target = e.target ? e.target  : undefined;
-    let e_path_0 =  e.path  ? e.path[0] : undefined;
-    let e_path_1 =  e.path  ? e.path[1] : undefined;
-/*{{{
-console.log("e_path_0:",e_path_0)
-console.log("e_path_1:",e_path_1)
-console.log("e.path:"  ,e.path  )
-}}}*/
-
-    if     (e.path && (e_path_0.tagName != "IMG"))  e_target = e_path_0;
-    else if(e.path &&  e_path_1                  )  e_target = e_path_1;
-    else if(e.originalTarget                     )  e_target = e.originalTarget;
-    else if(e.explicitOriginalTarget             )  e_target = e.explicitOriginalTarget;
+    let e_target = get_event_target(e);
 
     let el;
     e_target
@@ -606,6 +610,39 @@ if(log_this) log("get_event_XY: return { "+x+" , "+y+" }");
 };
 /*}}}*/
 
+/* OBJECT */
+/*{{{*/
+let get_el_methodNames = function(obj,_filter_str)
+{
+    let    propertyNames = new Set(); /* .. no duplicates */
+    let    current_obj   = obj;
+    do {
+        Object.getOwnPropertyNames( current_obj ).map((p_name) => propertyNames.add( p_name ) );
+    }
+    while((current_obj   = Object.getPrototypeOf( current_obj )));
+
+    let    propKeys      = [ ...propertyNames.keys() ];
+
+    let    methodNames   =  propKeys.filter((key) => typeof obj[key] === "function");
+
+    if(_filter_str)
+    {
+        let filter_str   = _filter_str.toLowerCase();
+        methodNames      = methodNames.filter((name) => name.toLowerCase().includes(filter_str));
+    }
+
+    return methodNames.sort();
+};
+/*}}}*/
+/*{{{*/
+let log_el_methodNames = function(_obj,_filter_str)
+{
+    console.dir( _obj );
+
+    console.dir(get_el_methodNames(_obj, _filter_str));
+};
+/*}}}*/
+
 /* EXPORT */
 /*{{{*/
 return { name : DOM_SENTENCE_UTIL_JS_ID
@@ -638,6 +675,10 @@ return { name : DOM_SENTENCE_UTIL_JS_ID
     , get_n_lbl
     , get_node_sibling_at_offset
     , get_parent_tag_id_class_chain
+
+    /* OBJECT */
+    , get_el_methodNames
+    , log_el_methodNames
 
     , logs
 };

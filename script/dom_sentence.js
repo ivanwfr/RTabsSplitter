@@ -22,7 +22,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (220828:20h:20)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230206:17h:46)";
 /*}}}*/
 let dom_sentence            = (function() {
 "use strict";
@@ -484,7 +484,9 @@ log("replace:%c"+LF+text, lf3)
     t_util.add_el_class(container, CSS_SENTENCE_CONTAINER);
     if( theme_dark ) {
         t_util.add_el_class(    container, CSS_DARK);
+/*{{{
         t_util.add_el_class(document.body, CSS_DARK);
+}}}*/
     }
 
     container.style.touchAction = "none";
@@ -1135,7 +1137,8 @@ let t_SENTENCE_FONTSIZE_APPLY = function(container)
 
     container.classList.add( e12_font_size );
 
-    container.parentElement.style.maxHeight = "fit-content";
+    if( container.parentElement )
+        container.parentElement.style.maxHeight = "fit-content";
 };
 /*}}}*/
 
@@ -1170,7 +1173,9 @@ if( log_this && e) log("%c type=["+e.type+"] e.target.id=["+e.target.id+"]", lbH
         t_util.del_el_class(    container, CSS_SENTENCE_CONTAINER);
         t_util.add_el_class(    container, CSS_OUTLINED); /* as an highlight history marker */
         t_util.del_el_class(    container, CSS_DARK);
+/*{{{
         t_util.del_el_class(document.body, CSS_DARK);
+}}}*/
 
         if( container.innerHTML_SAVED )
         {
@@ -1241,10 +1246,15 @@ let t_SENTENCE_onresize = function(e=window.event)
 };
 /*}}}*/
 /*_ t_SENTENCE_set_theme_dark {{{*/
-let t_SENTENCE_set_theme_dark = function(_theme_dark)
+let t_SENTENCE_set_theme_dark = function(state)
 {
-    theme_dark = !!_theme_dark;
-    localStorage_setItem("theme_dark", theme_dark);
+    localStorage_setItem("theme_dark", state);
+};
+/*}}}*/
+/*_ t_SENTENCE_get_theme_dark {{{*/
+let t_SENTENCE_get_theme_dark = function()
+{
+    return !!theme_dark;
 };
 /*}}}*/
 /*_ check_tool_event {{{*/
@@ -1425,6 +1435,7 @@ return { name : "dom_sentence"
     ,    t_SENTENCE_onresize
 
     ,    t_SENTENCE_set_theme_dark
+    ,    t_SENTENCE_get_theme_dark
     ,    t_SENTENCE_restore_text_containers_outlined
 
     /* DEBUG */

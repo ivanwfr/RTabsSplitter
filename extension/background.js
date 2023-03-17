@@ -3,7 +3,7 @@
 /* └────────────────────────────────────────────────────────────────────────┘ */
 /* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
 
-/* globals console, chrome, setTimeout */
+/* globals console, chrome, setTimeout */ /* eslint-disable-line no-redeclare */
 
 
 /* exported SPLITTER_BACKGROUND_SCRIPT_TAG */
@@ -11,23 +11,24 @@
 /* eslint-disable no-warning-comments */
 
 const SPLITTER_BACKGROUND_SCRIPT_ID     = "splitter_background_js";
-const SPLITTER_BACKGROUND_SCRIPT_TAG    =  SPLITTER_BACKGROUND_SCRIPT_ID  +" (220318:03h:24)";
+const SPLITTER_BACKGROUND_SCRIPT_TAG    =  SPLITTER_BACKGROUND_SCRIPT_ID  +" (230310:16h:27)";
 
 /*}}}*/
 let splitter_background = (function() {
 "use strict";
-let log_this =             false;
+let log_this =              false;
 let tag_this = log_this ||  true;
 /* log {{{*/
-const LOG_HEADER_STYLE = "border:2px solid #606; border-radius:0 1em 1em 0; background-color:#111;";
-const LOG_HEADER_RESET = "border:none;";
+const CSS_LOG_HEAD = "border:2px solid #606; background-color:#111; border-radius:0 1em 1em 0;";
+const CSS_LOG_ARG1 = "border:2px solid #660; background-color:#222;";
+const CSS_LOG_REST = "border:none;";
 
 let log = (arg1,...rest) => {
-    if(arg1.startsWith("..."))
+    if(String(arg1).startsWith("..."))
         console.log(arg1, ...rest);
     else
-        console.log("%c "+SPLITTER_BACKGROUND_SCRIPT_TAG+" %c "+arg1
-                    ,LOG_HEADER_STYLE                     ,LOG_HEADER_RESET, ...rest);
+        console.log("%c "+SPLITTER_BACKGROUND_SCRIPT_TAG+" %c"+arg1    +"%c"
+                    ,CSS_LOG_HEAD                         ,CSS_LOG_ARG1,CSS_LOG_REST, ...rest);
 };
 /*}}}*/
 
@@ -36,13 +37,13 @@ let log = (arg1,...rest) => {
     // └───────────────────────────────────────────────────────────────────────┘
 /*{{{*/
 
-const IMG_ACTIVATE  = "images/rtabs16_6_b.png";
-const IMG_UNLOADED  = "images/rtabs16_6_b_square.png";
+const IMG_ACTIVATE  = "/images/rtabs16_6_b.png";
+const IMG_UNLOADED  = "/images/rtabs16_6_b_square.png";
 
 /*}}}*/
 
     // ┌───────────────────────────────────────────────────────────────────────┐
-    // │ EXTENSION ICON .................. chrome.browserAction .. chrome.tabs │
+    // │ EXTENSION ICON ......................... chrome.action .. chrome.tabs │
     // └───────────────────────────────────────────────────────────────────────┘
 /*{{{*/
 let browser_action_click_active_tab_ID;
@@ -55,7 +56,7 @@ let add_browser_action_click_listener = function()
 log("%c LISTENING TO BROWSER ACTION CLICK ON EXTENSION ICON...", "color:#FF0");
 
 /*}}}*/
-    chrome.browserAction.onClicked.addListener( browser_action_click_listener );
+    chrome.action.onClicked.addListener( browser_action_click_listener );
 };
 /*}}}*/
 /*_ browser_action_click_listener {{{*/
@@ -70,13 +71,13 @@ let browser_action_click_listener = function(active_tab)
 /*_ set_icon_activate {{{*/
 let set_icon_activate = function(tabId) // eslint-disable-line no-unused-vars
 {
-    chrome.browserAction.setIcon ({  path : IMG_ACTIVATE});
-    chrome.browserAction.setTitle({ title : "SPLITTER ACTIVATED" });
+    chrome.action.setIcon ({  path : IMG_ACTIVATE});
+    chrome.action.setTitle({ title : "SPLITTER ACTIVATED" });
 };
 let set_icon_unloaded = function(tabId) // eslint-disable-line no-unused-vars
 {
-    chrome.browserAction.setIcon ({  path : IMG_UNLOADED});
-    chrome.browserAction.setTitle({ title : "SPLITTER UNLOADED"  });
+    chrome.action.setIcon ({  path : IMG_UNLOADED});
+    chrome.action.setTitle({ title : "SPLITTER UNLOADED"  });
 };
 /*}}}*/
 
@@ -199,26 +200,69 @@ let check_lastError = function(response_from_last_messaged_tab)
      * .. "Unchecked runtime.lastError" warning
      */
 /*}}}*/
-
-    if(!chrome.runtime.lastError ) return true; // i.e. checked
-
+    if(!chrome.runtime.lastError )
+        return true; // i.e. checked
+/*{{{*/
 if(log_this) log("CHECKED %c some tabs to reload ? %c"+chrome.runtime.lastError.message
                     ,       "background-color:#600",  "background-color:#600");
-
+/*}}}*/
+    /* handle RELOAD_MESSAGE {{{*/
     if(   response_from_last_messaged_tab
        && chrome.runtime.lastError.message.includes("Receiving end does not exist")
       ) {
         let time_MS = new Date().getTime();
         if((time_MS - last_warn_time_MS) < LAST_WARN_DELAY_MS) return true; // No sweat, same bunch, already warned about
-
-if(log_this) log("%c"+RELOAD_MESSAGE, "background-color:#600");
-
         last_warn_time_MS = time_MS;
 
         /* USER ALERT */
-        chrome.tabs.executeScript ({code : "alert('"+ RELOAD_MESSAGE.replace(/│*\n/g,"\\n")+"')"});
+        check_RELOAD_MESSAGE();
+
+        options_toggle_activated( false );
     }
-    return false;
+    /*}}}*/
+    return    false; // i.e. not checked
+};
+/*}}}*/
+/*_ check_RELOAD_MESSAGE {{{*/
+let RELOAD_MESSAGE_formatted;
+
+let check_RELOAD_MESSAGE = async function()
+{
+    /* manifest V2 {{{*/
+    if(typeof chrome.tabs.executeScript != "undefined")
+    {
+/*{{{*/
+        log( "check_RELOAD_MESSAGE:\n"
+            +       RELOAD_MESSAGE);
+/*}}}*/
+        chrome.tabs.executeScript({ code : "alert('"+ RELOAD_MESSAGE.replace(/│*\n/g,"\\n")+"')" });
+        return;
+    }
+    /*}}}*/
+    /* manifest V3 {{{*/
+    else {
+        let [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+/*{{{*/
+        log( "check_RELOAD_MESSAGE: "+tab.title+" "+tab.url+"\n"
+            +       RELOAD_MESSAGE);
+/*}}}*/
+
+        if(!RELOAD_MESSAGE_formatted)
+            RELOAD_MESSAGE_formatted = RELOAD_MESSAGE.replace(/│/g," ");
+
+        let user_alert               = function(msg) { alert(msg); }; /* eslint-disable-line no-alert */
+
+        chrome.scripting
+            .executeScript({ target : { tabId: tab.id }
+                           , func   :   user_alert
+                           , args   : [ RELOAD_MESSAGE_formatted ]
+            })
+/*{{{
+        .then         (() => { console.log(    "tab.id:", tab.id); })
+}}}*/
+        ;
+    }
+    /*}}}*/
 };
 /*}}}*/
 /*}}}*/
@@ -238,6 +282,7 @@ if(log_this) log("%c LISTENING TO MESSAGE FROM CONTENT SCRIPT...", "color:#AFA")
 };
 let onMessage_listener = function(request, sender, sendResponse)
 {
+/*{{{*/
 if(tag_this) log("%c RECEIVING MESSAGE FROM CONTENT SCRIPT: "+Object.keys(request), "color:#0FF;");
 if(log_this) log(     "...request:");
 if(log_this) console.dir( request  );
@@ -248,18 +293,32 @@ if(log_this) console.dir( request  );
         let response = options;
 
 if(tag_this) log("➔ SENDING response.activated=["+response.activated+"]");
-if(log_this) log(     "...response:");
-if(log_this) console.dir(         response  );
-        sendResponse(response  );
+if(log_this) log(       "...response:");
+if(log_this) console.dir(   response  );
+        sendResponse(       response  );
     }
     /*}}}*/
-    /* 2. RELOAD EXTENSION {{{*/
+    /* 2. DOM_EVENT THEME SET {{{*/
+    if( request.theme_dark && (request.theme_dark != "undefined"))
+    {
+        options.theme_dark = request.theme_dark;
+
+        let response = options;
+
+if(tag_this) log("➔ SENDING response.theme_dark=["+response.theme_dark+"]");
+if(log_this) log(       "...response:");
+if(log_this) console.dir(   response  );
+        sendResponse(       response  );
+    }
+    /*}}}*/
+    /* 3. RELOAD EXTENSION {{{*/
     if(   request.cmd && request.cmd == "reload")
     {
 log("%c RELOADING EXTENSION: ("+SPLITTER_BACKGROUND_SCRIPT_TAG+")", "background-color:red; border:1px; border-radius:1em; padding:0.5em;");
 
         setTimeout(function() { chrome.runtime.reload(); }, 1000);
     }
+    /*}}}*/
     return sendResponse ? true : false; // i.e. ASYNC / SYNC usage of sendResponse
 };
 /*}}}*/
@@ -295,6 +354,8 @@ log(caller+" ➔ %c BROWSER ACTION %c activated "+options.activated, "color:#FF0
         , options_toggle_activated
     };
 })();
+    /* from manifest V2 to V3 */
+    if(typeof chrome.action == "undefined") chrome.action = chrome.browserAction;
     splitter_background.add_browser_action_click_listener();
     splitter_background.add_message_listener();
 //  splitter_background.options_toggle_activated(true);//FIXME

@@ -2,22 +2,25 @@
     "author"           :   "Ivan Wellesz",
     "name"             :   "RTabsSplitter Extension",
     "short_name"       :   "RTabsSplitter",
-    "version"          :   "1.22.02.21",
-    "manifest_version" :    2,
+    "version"          :   "1.23.03.10",
+    "manifest_version" :    3,
     "description"      :   "Sentence splitter",
     "homepage_url"     :   "https://remotetabs.com",
     "icons"            : {
-        "48"             : "images/rtabs48.png",
-        "32"             : "images/rtabs32.png",
-        "16"             : "images/rtabs16.png",
-        "16"             : "images/rtabs16_6_b.png",
-        "16"             : "images/rtabs16_6_b_square.png"
+        "48"             : "/images/rtabs48.png",
+        "32"             : "/images/rtabs32.png",
+        "16"             : "/images/rtabs16.png",
+        "16"             : "/images/rtabs16_6_b.png",
+        "16"             : "/images/rtabs16_6_b_square.png"
     },
     "permissions"      : [ "tabs"
-        ,                  "file://*/*"
-        ,                  "http://*/*"
-        ,                  "https://*/*"
+        ,                  "activeTab"
+        ,                  "scripting"
+        ,                  "storage"
         ,                  "webRequest"
+    ],
+    "host_permissions" : [
+                           "*://*/*"
     ],
     "content_scripts"  : [
         {
@@ -34,15 +37,11 @@
             ]
         }
     ],
-    "browser_action"   : {
-        "default_icon" :   "images/rtabs16_6_b_square.png"
+    "action"           : {
+        "default_icon" : { "16": "/images/rtabs16_6_b_square.png" }
     },
     "background"       : {
-        "scripts"      : [ "extension/background.js"
+        "service_worker" : "extension/background.js"
 
-
-
-        ],
-        "persistent"   : true
     }
 }

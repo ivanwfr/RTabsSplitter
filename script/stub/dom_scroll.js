@@ -4,9 +4,8 @@
 /* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
 
 /* globals console, document, window */
-/* globals localStorage, setTimeout, clearTimeout */
-/* globals dom_tools, dom_util, dom_log */
-/* globals dom_sentence_event, dom_sentence_util */
+/* globals setTimeout, clearTimeout */
+/* globals dom_tools, dom_store, dom_util, dom_log */
 
 
 /* exported DOM_SCROLL_JS_TAG, dom_scroll */
@@ -14,7 +13,7 @@
 /* exported DOM_SCROLL_JS_TAG */
 
 const DOM_SCROLL_JS_ID         = "dom_scroll_js";
-const DOM_SCROLL_JS_TAG        = DOM_SCROLL_JS_ID  +" (220317:18h:00)";
+const DOM_SCROLL_JS_TAG        = DOM_SCROLL_JS_ID  +" (230820:21h:11)";
 /*}}}*/
 let dom_scroll              = (function() {
 "use strict";
@@ -27,6 +26,7 @@ let   DOM_SCROLL_TAG        = false;
 /*➔ t_scroll_IMPORT {{{*/
 /*{{{*/
 
+let t_store    ;
 let t_util     ;
 let t_tools    ;
 
@@ -34,20 +34,23 @@ let t_tools    ;
 /*}}}*/
 let t_scroll_IMPORT  = function(_log_this,import_num)
 {
+    /* t_store {{{*/
+    if     (typeof      dom_store != "undefined") t_store  =      dom_store; /*      script/dom_store.js */
+    else console.warn("MISSING STUB FOR: [dom_store]");
+
+    /*}}}*/
     /* MODULE LOGGING TAGGING {{{*/
-    DOM_SCROLL_LOG = DOM_SCROLL_LOG || localStorage_getItem("DOM_SCROLL_LOG");
-    DOM_SCROLL_TAG = DOM_SCROLL_TAG || localStorage_getItem("DOM_SCROLL_TAG");
+    DOM_SCROLL_LOG = DOM_SCROLL_LOG || t_store.t_store_getItem("DOM_SCROLL_LOG");
+    DOM_SCROLL_TAG = DOM_SCROLL_TAG || t_store.t_store_getItem("DOM_SCROLL_TAG");
 
     /*}}}*/
     /* t_util {{{*/
-    if     (typeof dom_util           != "undefined") t_util  = dom_util         ; /* script/dom_util.js */
-    else if(typeof dom_sentence_util  != "undefined") t_util  = dom_sentence_util; /* script/stub/dom_sentence_util.js */
+    if     (typeof      dom_util != "undefined") t_util  =      dom_util; /*      script/dom_util.js */
     else console.warn("MISSING STUB FOR: [dom_util]");
 
     /*}}}*/
     /* t_tools {{{*/
-    if     (typeof dom_tools          != "undefined") t_tools = dom_tools         ; /* script/dom_tools.js */
-    else if(typeof dom_sentence_event != "undefined") t_tools = dom_sentence_event; /* script/stub/dom_sentence_event.js */
+    if     (typeof      dom_tools != "undefined") t_tools =      dom_tools ; /*      script/dom_tools.js */
     else console.warn("MISSING STUB FOR: [dom_tools]");
 
     /*}}}*/
@@ -105,11 +108,6 @@ let   scroll_INTERN     = function()
     }
     /*}}}*/
 };
-/*}}}*/
-/*_ localStorage {{{*/
-let localStorage_setItem = function(key,val) { if(val) localStorage.setItem   (key,val); else localStorage.removeItem(key); };
-let localStorage_getItem = function(key    ) { return  localStorage.getItem   (key    ); };
-let localStorage_delItem = function(key    ) { /*...*/ localStorage.removeItem(key    ); };
 /*}}}*/
 /* eslint-enable  no-unused-vars */
 /*}}}*/
@@ -594,23 +592,9 @@ let   scrollIntoViewIfNeeded_then_recenter_handler_scrollTo_clr_scrollBehavior =
 
 
 /* EXPORT */
-/*➔ t_store_set_state {{{*/
-let t_store_set_state = function(label,state)
-{
-    if(    state != undefined)
-    {
-        if(state) localStorage.setItem   (label, "true");
-        else      localStorage.removeItem(label        );
-        return !!state;
-    }
-    else {
-        return    localStorage.getItem   (label        );
-    }
-};
-/*}}}*/
 return { name : "dom_scroll"
-    ,    logging : (state) => DOM_SCROLL_LOG = t_store_set_state("DOM_SCROLL_LOG",state)
-    ,    tagging : (state) => DOM_SCROLL_TAG = t_store_set_state("DOM_SCROLL_TAG",state)
+    ,    logging : (state) => DOM_SCROLL_LOG = t_store.t_store_set_state("DOM_SCROLL_LOG",state)
+    ,    tagging : (state) => DOM_SCROLL_TAG = t_store.t_store_set_state("DOM_SCROLL_TAG",state)
     ,    t_scroll_listener
     ,    t_scrollIntoViewIfNeeded_set_EL
     ,    t_scroll_is_scrolling
@@ -625,9 +609,9 @@ return { name : "dom_scroll"
 :e  $BROWSEEXT/SplitterExtension/javascript/background.js
 :e  $BROWSEEXT/SplitterExtension/javascript/content.js
 :e             $RPROFILES/script/dom_sentence.js
-:e             $RPROFILES/script/stub/dom_sentence_event.js
+:e             $RPROFILES/script/stub/dom_tools.js
 "...           $RPROFILES/script/stub/dom_scroll.js
-:e             $RPROFILES/script/stub/dom_sentence_util.js
+:e             $RPROFILES/script/stub/dom_util.js
 :e             $RPROFILES/script/stub/dom_log.js
 :e             $RPROFILES/stylesheet/dom_host.css
 

@@ -283,21 +283,21 @@ setTimeout(splitter_content.splitter_content_init, 500);
 "│                                                                             │
 :e  $BROWSEEXT/SplitterExtension/manifest.json
 
-:e  $BROWSEEXT/SplitterExtension/extension/background.js
-"...$BROWSEEXT/SplitterExtension/extension/content.js
-:e             $RPROFILES/script/dom_sentence.js
-:e             $RPROFILES/script/stub/dom_sentence_event.js
-:e             $RPROFILES/script/stub/dom_scroll.js
-:e             $RPROFILES/script/stub/dom_sentence_util.js
-:e             $RPROFILES/script/stub/dom_log.js
-:e             $RPROFILES/stylesheet/dom_host.css
+:e  $BROWSEEXT/SplitterExtension/javascript/background.js
+"...$BROWSEEXT/SplitterExtension/javascript/content.js
+:e                        $RPROFILES/script/dom_sentence.js
+:e                        $RPROFILES/script/stub/dom_sentence_event.js
+:e                        $RPROFILES/script/stub/dom_scroll.js
+:e                        $RPROFILES/script/stub/dom_sentence_util.js
+:e                        $RPROFILES/script/stub/dom_log.js
+:e                        $RPROFILES/stylesheet/dom_host.css
 
-:e             $RPROFILES/script/dom_select.js
-:e             $RPROFILES/script/dom_util.js
-:e             $RPROFILES/script/dom_log.js
+:e                        $RPROFILES/script/dom_select.js
+:e                        $RPROFILES/script/dom_util.js
+:e                        $RPROFILES/script/dom_log.js
 
-:e             $RPROFILES/script/splitter.js
-:e             $RPROFILES/script/dom_load.js
+:e                        $RPROFILES/script/splitter.js
+:e                        $RPROFILES/script/dom_load.js
 "│                                                                             │
 "└─────────────────────────────────────────────────────────────────────────────┘
 }}}*/

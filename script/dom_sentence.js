@@ -2,19 +2,20 @@
 /*│ dom_scroll_js                                                            │*/
 /*└──────────────────────────────────────────────────────────────────────────┘*/
 /* jshint esversion: 9, laxbreak:true, laxcomma:true, boss:true {{{*/
-/* globals console, window, document, localStorage, NodeFilter */
+/* globals console, window, document, NodeFilter */
 /* globals setTimeout, clearTimeout */
 
 /* INLINE */
-/* globals dom_util , dom_sentence_util  */
-/* globals dom_tools, dom_sentence_event */
+/* globals dom_tools */
+/* globals dom_store */
+/* globals dom_util  */
 
 /* OPTIONAL */
 /* globals dom_log    */
 /* globals dom_popup  */
-/* globals dom_view   */
-/* globals dom_scroll */
 /* globals dom_prop   */
+/* globals dom_scroll */
+/* globals dom_view   */
 
 /* exported dom_sentence, DOM_SENTENCE_JS_TAG */
 
@@ -22,7 +23,7 @@
 /* eslint-disable dot-notation        */
 
 const DOM_SENTENCE_JS_ID      = "dom_sentence_js";
-const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230206:17h:46)";
+const DOM_SENTENCE_JS_TAG     = DOM_SENTENCE_JS_ID  +" (230820:21h:14)";
 /*}}}*/
 let dom_sentence            = (function() {
 "use strict";
@@ -35,6 +36,7 @@ let   DOM_SENTENCE_TAG      = false;
 /*➔ t_sentence_IMPORT {{{*/
 /*{{{*/
 
+let t_store    ;
 let t_util     ;
 let t_tools    ;
 
@@ -42,20 +44,23 @@ let t_tools    ;
 /*}}}*/
 let t_sentence_IMPORT  = function(_log_this,import_num)
 {
+    /* t_store {{{*/
+    if     (typeof      dom_store != "undefined" ) t_store = dom_store     ; /*      script/dom_store.js */
+    else console.warn("MISSING STUB FOR: [dom_store]");
+
+    /*}}}*/
     /* MODULE LOGGING TAGGING {{{*/
-    DOM_SENTENCE_LOG = DOM_SENTENCE_LOG || localStorage_getItem("DOM_SENTENCE_LOG");
-    DOM_SENTENCE_TAG = DOM_SENTENCE_TAG || localStorage_getItem("DOM_SENTENCE_TAG");
+    DOM_SENTENCE_LOG = DOM_SENTENCE_LOG || t_store.t_store_getItem("DOM_SENTENCE_LOG");
+    DOM_SENTENCE_TAG = DOM_SENTENCE_TAG || t_store.t_store_getItem("DOM_SENTENCE_TAG");
 
     /*}}}*/
     /* t_util {{{*/
-    if     (typeof dom_util           != "undefined") t_util  = dom_util         ; /* script/dom_util.js */
-    else if(typeof dom_sentence_util  != "undefined") t_util  = dom_sentence_util; /* script/stub/dom_sentence_util.js */
-    else console.warn("MISSING STUB FOR: [dom_util]");
+    if     (typeof      dom_util != "undefined" ) t_util  =      dom_util; /*      script/dom_util.js */
+    else console.warn("MISSING STUB FOR: [dom_util]" );
 
     /*}}}*/
     /* t_tools {{{*/
-    if     (typeof dom_tools          != "undefined") t_tools = dom_tools         ; /* script/dom_tools.js */
-    else if(typeof dom_sentence_event != "undefined") t_tools = dom_sentence_event; /* script/stub/dom_sentence_event.js */
+    if     (typeof      dom_tools != "undefined" ) t_tools =      dom_tools; /*      script/dom_tools.js */
     else console.warn("MISSING STUB FOR: [dom_tools]");
 
     /*}}}*/
@@ -102,20 +107,15 @@ let   sentence_INTERN   = function()
     /* lfX {{{*/
     else if((typeof dom_log != "undefined") && dom_log.lfX)
     {
+        lbC = dom_log.lbC;
         lbH = dom_log.lbH;
         lbL = dom_log.lbL;
         lbR = dom_log.lbR;
-        lbC = dom_log.lbC;
         lfX = dom_log.lfX;
         [ lf0 ,lf1 ,lf2 ,lf3 ,lf4 ,lf5 ,lf6 ,lf7 ,lf8 ,lf9 ] = lfX;
     }
     /*}}}*/
 };
-/*}}}*/
-/*_ localStorage {{{*/
-let localStorage_setItem = function(key,val) { if(val) localStorage.setItem   (key,val); else localStorage.removeItem(key); };
-let localStorage_getItem = function(key    ) { return  localStorage.getItem   (key    ); };
-let localStorage_delItem = function(key    ) { /*..........................................*/ localStorage.removeItem(key); };
 /*}}}*/
 /* eslint-enable  no-unused-vars */
 /*}}}*/
@@ -198,14 +198,14 @@ let log_this = _log_this || LOG_MAP.S2_SELECT;
             || t_util.get_el_parent_with_tag  (el, "TABLE"          )    /*        cell collection  */
 
         /* GLOSSARY */
-        /*  || t_util.get_el_parent_with_tag  (el,  "DT"         ) */ /* single cell Term        */
-        /*  || t_util.get_el_parent_with_tag  (el,  "DD"         ) */ /* single cell Description */
-        /*  || t_util.get_el_parent_with_tag  (el, "DL"          ) */ /*        cell collection  .. https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl */
+        /*  || t_util.get_el_parent_with_tag  (el,  "DT"            ) */ /* single cell Term        */
+        /*  || t_util.get_el_parent_with_tag  (el,  "DD"            ) */ /* single cell Description */
+        /*  || t_util.get_el_parent_with_tag  (el, "DL"             ) */ /*        cell collection  .. https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl */
 
         /* COMPOSITION */
-            || t_util.get_el_parent_with_tag  (el, "BLOCKQUOTE"      )
-            || t_util.get_el_parent_with_tag  (el, "DIR"             )
-            || t_util.get_el_parent_with_tag  (el, "DIV"             )
+            || t_util.get_el_parent_with_tag  (el, "BLOCKQUOTE"     )
+            || t_util.get_el_parent_with_tag  (el, "DIR"            )
+            || t_util.get_el_parent_with_tag  (el, "DIV"            )
 
         /* DETAILS */
         /*  || t_util.get_el_parent_with_tag  (el,  "SUMMARY"       ) */
@@ -399,13 +399,13 @@ if( log_this && e) log("%c type=["+e.type+"] e.target.id=["+e.target.id+"]", lbH
     /*}}}*/
     /* SYNC SENTENCE COLORS {{{*/
     if((typeof dom_prop) != "undefined") theme_dark = dom_prop.get        ("theme_dark");
-    else                                 theme_dark = localStorage_getItem("theme_dark");
+    else                                 theme_dark = t_store.t_store_getItem("theme_dark");
 
     /*}}}*/
     /* SYNC SCROLL_SMOOTH {{{*/
 /*
-    if((typeof dom_prop) != "undefined") scroll_smooth = dom_prop.get        ("scroll_smooth");
-    else                                 scroll_smooth = localStorage_getItem("scroll_smooth");
+    if((typeof dom_prop) != "undefined") scroll_smooth = dom_prop.get   ("scroll_smooth");
+    else                                 scroll_smooth = t_store.t_store_getItem("scroll_smooth");
 */
     document.getElementsByTagName("HTML")[0].style.scrollBehavior
         = scroll_smooth
@@ -1248,7 +1248,7 @@ let t_SENTENCE_onresize = function(e=window.event)
 /*_ t_SENTENCE_set_theme_dark {{{*/
 let t_SENTENCE_set_theme_dark = function(state)
 {
-    localStorage_setItem("theme_dark", state);
+    t_store.t_store_set_state("theme_dark", state);
 };
 /*}}}*/
 /*_ t_SENTENCE_get_theme_dark {{{*/
@@ -1303,7 +1303,7 @@ console.dir(e);
         theme_dark = !theme_dark;
 
         /* apply */
-        localStorage_setItem("theme_dark", theme_dark);
+        t_store.t_store_set_value("theme_dark", theme_dark);
 
         /* save */
         if((typeof dom_prop) != "undefined") dom_prop.set("theme_dark", theme_dark);
@@ -1401,23 +1401,9 @@ let get_parent_chain = function(el) /* eslint-disable-line no-unused-vars */
 
 
 /* ➔ EXPORT {{{*/
-/*➔ t_store_set_state {{{*/
-let t_store_set_state = function(label,state)
-{
-    if(    state != undefined)
-    {
-        if(state) localStorage.setItem   (label, "true");
-        else      localStorage.removeItem(label        );
-        return !!state;
-    }
-    else {
-        return    localStorage.getItem   (label        );
-    }
-};
-/*}}}*/
 return { name : "dom_sentence"
-    ,    logging : (state) => DOM_SENTENCE_LOG = t_store_set_state("DOM_SENTENCE_LOG",state)
-    ,    tagging : (state) => DOM_SENTENCE_TAG = t_store_set_state("DOM_SENTENCE_TAG",state)
+    ,    logging : (state) => DOM_SENTENCE_LOG = t_store.t_store_set_state("DOM_SENTENCE_LOG",state)
+    ,    tagging : (state) => DOM_SENTENCE_TAG = t_store.t_store_set_state("DOM_SENTENCE_TAG",state)
     ,    t_sentence_IMPORT
     ,    CSS_SENTENCE_CONTAINER
 
@@ -1454,9 +1440,9 @@ return { name : "dom_sentence"
 :e  $BROWSEEXT/SplitterExtension/javascript/background.js
 :e  $BROWSEEXT/SplitterExtension/javascript/content.js
 "...           $RPROFILES/script/dom_sentence.js
-:e             $RPROFILES/script/stub/dom_sentence_event.js
+:e             $RPROFILES/script/stub/dom_tools.js
 :e             $RPROFILES/script/stub/dom_scroll.js
-:e             $RPROFILES/script/stub/dom_sentence_util.js
+:e             $RPROFILES/script/stub/dom_util.js
 :e             $RPROFILES/script/stub/dom_log.js
 :e             $RPROFILES/stylesheet/dom_host.css
 

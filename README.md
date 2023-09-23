@@ -1,4 +1,4 @@
-<!-- README.md _TAG (220325:17h:50) -->
+<!-- README.md _TAG (230923:17h:49) -->
 # RTabsSplitter - Web Annotation - Sentence splitter Browser extension
 
 Browser Search-in-Page Highliter Toolset ( built on standard HTML5 DOM3 JS and JSON )
@@ -15,7 +15,7 @@ Browser Search-in-Page Highliter Toolset ( built on standard HTML5 DOM3 JS and J
 
     background.html
 
-    extension
+    javascript
     ├── background.js
     └── content.js
 
@@ -23,9 +23,7 @@ Browser Search-in-Page Highliter Toolset ( built on standard HTML5 DOM3 JS and J
     ├── dom_sentence.js
     └── stub
         ├── dom_log.js
-        ├── dom_scroll.js
-        ├── dom_sentence_event.js
-        └── dom_sentence_util.js
+        └── dom_scroll.js
 
     images
     ├── rtabs16.png

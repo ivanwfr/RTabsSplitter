@@ -30,10 +30,8 @@
             ],
             "js"       : [ "script/stub/dom_log.js"
                 ,          "script/stub/dom_scroll.js"
-                ,          "script/stub/dom_sentence_util.js"
-                ,          "script/stub/dom_sentence_event.js"
                 ,          "script/dom_sentence.js"
-                ,          "extension/content.js"
+                ,          "javascript/content.js"
             ]
         }
     ],
@@ -41,7 +39,7 @@
         "default_icon" : { "16": "/images/rtabs16_6_b_square.png" }
     },
     "background"       : {
-        "service_worker" : "extension/background.js"
+        "service_worker" : "javascript/background.js"
 
     }
 }

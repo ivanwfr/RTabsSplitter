@@ -1,5 +1,5 @@
 @charset "utf-8";
-#dom_host_css_tag   { content: "dom_host_css (230201:14h:13)"; }
+#dom_host_css_tag   { content: "dom_host_css (230525:15h:05)"; }
 
 /* body {{{*/
 .dark * { background : rgba(17,17,17,0.5); color: rgba(221,221,221,0.5); }
@@ -786,6 +786,7 @@ table { border-collapse: collapse !important; }
 .sentence_container.outlined {
     transition       : transform 150ms ease-in;
     transform        : rotate(1deg) scale(0.9);
+    transform-origin : 50%  0%;
 /*
     opacity          : 0.8;
 */
@@ -819,7 +820,7 @@ table { border-collapse: collapse !important; }
 .sentence             { overflow         : visible      !important; }
 .sentence, .clause    { display          : block        !important; }
 .sentence, .clause    { transform        : scale(0.9)   !important; }
-.sentence, .clause    { transform-origin : 0% 50%       !important; }
+.sentence, .clause    { transform-origin : 0%  0%       !important; }
 
 .sentence             { margin-top       : 0.5em        !important; }
            .clause    { margin-top       : 0            !important; }
@@ -997,9 +998,9 @@ body.dark .clause     {            color : #111                      ; }
 :e  $BROWSEEXT/SplitterExtension/javascript/background.js
 :e  $BROWSEEXT/SplitterExtension/javascript/content.js
 :e             $RPROFILES/script/dom_sentence.js
-:e             $RPROFILES/script/stub/dom_sentence_event.js
+:e             $RPROFILES/script/stub/dom_tools.js
 :e             $RPROFILES/script/stub/dom_scroll.js
-:e             $RPROFILES/script/stub/dom_sentence_util.js
+:e             $RPROFILES/script/stub/dom_util.js
 :e             $RPROFILES/script/stub/dom_log.js
 "...           $RPROFILES/stylesheet/dom_host.css
 

@@ -11,7 +11,7 @@
 /* eslint-disable no-warning-comments */
 
 const SPLITTER_BACKGROUND_SCRIPT_ID     = "splitter_background_js";
-const SPLITTER_BACKGROUND_SCRIPT_TAG    =  SPLITTER_BACKGROUND_SCRIPT_ID  +" (230310:16h:27)";
+const SPLITTER_BACKGROUND_SCRIPT_TAG    =  SPLITTER_BACKGROUND_SCRIPT_ID  +" (230320:14h:13)";
 
 /*}}}*/
 let splitter_background = (function() {
@@ -365,8 +365,8 @@ log(caller+" ➔ %c BROWSER ACTION %c activated "+options.activated, "color:#FF0
 "│                                                                             │
 :e  $BROWSEEXT/SplitterExtension/manifest.json
 
-"...$BROWSEEXT/SplitterExtension/extension/background.js
-:e  $BROWSEEXT/SplitterExtension/extension/content.js
+"...$BROWSEEXT/SplitterExtension/javascript/background.js
+:e  $BROWSEEXT/SplitterExtension/javascript/content.js
 :e             $RPROFILES/script/dom_sentence.js
 :e             $RPROFILES/script/stub/dom_sentence_event.js
 :e             $RPROFILES/script/stub/dom_scroll.js
